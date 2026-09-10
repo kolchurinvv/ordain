@@ -12,6 +12,20 @@ would break it" is the single most common way red reaches the main branch.
 2. Watch each one to a terminal state (`success` / `failure` / `cancelled`).
 3. Only then report the work as landed.
 
+## Terminal ≠ proven
+
+Reaching a terminal `success` is not the same as the gates having proven
+something about **your** commit. Before calling a push done, confirm the run's
+head SHA is your tip (concurrency groups cancel superseded runs, and a check mark
+can belong to an older commit), enumerate per-job conclusions rather than reading
+the top-level badge (an offline runner makes jobs queue and an umbrella resolve
+`skipped`, not `failure`), and know which of the gates that "passed" are
+warn-only or had no baseline to compare against.
+
+The full enumeration of ways a pipeline goes green without proving anything —
+and what to check for each — is in `ai/08-adversarial-review.md` (rule 2). It is
+written for reviewing someone else's change; apply the same list to your own.
+
 ## Use the project's poll recipe — do not hand-roll a loop
 
 If the repo provides a CI-watch recipe (e.g. `just ci-watch`, a

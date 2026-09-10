@@ -20,6 +20,7 @@ etc. — see `ai/providers.md`).
 | **planner** (`ai/agents/planner.md`) | A task needs an implementation strategy before any code is written — critical files, sequencing, trade-offs. | Write or edit code. |
 | **coding-teacher** (`ai/agents/coding-teacher.md`) | The user is *learning* — "how do I…", wants a concept or some code explained, or is stuck and wants understanding, not just a patch. | Use when the user just wants the work done — that's a straight implementation. |
 | **reviewer** (`ai/agents/reviewer.md`) | A diff needs a correctness/quality pass with adversarial verification before it lands. | Rubber-stamp; widen scope beyond the diff. |
+| **adversary** (`ai/agents/adversary.md`) | A change an *agent* authored from a spec/ticket it interpreted alone is up for merge, and it touches a shared layer, an invariant, a permission seam, or spec'd behaviour. Assumes the change is wrong and checks conformance-to-request first. | Review human-authored diffs (use **reviewer**); edit, fix, merge, or approve anything. |
 | **general-purpose** | A multi-step research/search task that doesn't fit a specialist, or you're not confident a search lands in the first few tries. | Replace a specialist when one fits. |
 | **domain specialists** (e.g. a `design-replicator`) | A repo-specific, high-fidelity task with its own methodology. Author per `ai/05`. | — |
 
@@ -47,6 +48,15 @@ re-author them here.
 - **Verify findings adversarially.** For review/audit, prefer a **reviewer**
   that tries to *refute* each finding (and, for thorough passes, multiple
   independent verifiers) over a single confident assertion.
+- **Send agent-authored work to a different context than wrote it.** The
+  **adversary** only works if it did not read the implementer's plan — an
+  adversary that inherits the author's context inherits the author's misreading
+  and can only confirm. Spawn it fresh; do not continue the implementing agent.
+  See `ai/08-adversarial-review.md`.
+- **Allocate before you fan out.** Parallel streams on one codebase need a
+  written frozen/owned/shared allocation agreed *before* any of them starts, or
+  they collide on the few files every feature must touch. See
+  `ai/09-parallel-streams.md`.
 
 ## Multi-agent orchestration (when a repo opts in)
 

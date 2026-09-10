@@ -73,6 +73,18 @@ gh pr create --base <base> --title "..." --body "..."
   the card.
 - End the PR body with whatever attribution footer the repo standardizes on.
 
+**Enforce issue-first with a gate, not a convention.** A CI job that fails any PR
+whose body carries no issue reference is worth its weight: it makes every change
+traceable to the request that motivated it. That link is not bookkeeping — it is
+the precondition for `ai/08-adversarial-review.md`'s first rule, which asks
+whether the change does what was *asked*. A change with no recoverable request
+cannot be reviewed for conformance at all, only for correctness, and correctness
+is the cheap half. File the issue when work is dispatched, not when the PR opens.
+
+Provide named escape hatches (a `no-issue` label, a branch-name prefix for
+machine-authored fixes carrying their own ticket ID) so the gate is bypassable on
+purpose and not by habit.
+
 ## Milestone / rollback tags
 
 When the user asks for a milestone or rollback point:

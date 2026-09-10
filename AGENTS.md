@@ -23,6 +23,8 @@ This file is the index and the non-negotiable core. The depth lives in the
 | Authoring or editing a sub-agent definition | `ai/05-agent-authoring.md` |
 | Deciding *where* a piece of knowledge belongs | `ai/06-knowledge-placement.md` |
 | Deciding which specialist to delegate to | `ai/07-agent-roster.md` (+ `ai/agents/*.md`) |
+| Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
+| Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 
 ---
 
@@ -49,10 +51,22 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    anything" is how red reaches the main branch. See `ai/02`.
 7. **Never crash on external failure.** Networks time out, payloads are
    malformed, storage is unwritable. Degrade gracefully. See `ai/03`.
-8. **Durable agent state lives in version control.** Agent definitions and
+8. **Autonomous mode is conditional on rules 1–7.** Where a repository grants
+   broad tool permissions, they hold only while the rules above are honored. The
+   instant one cannot be, drop out and confirm with the user. See `ai/00`.
+9. **Durable agent state lives in version control.** Agent definitions and
    on-disk memory are tracked files, not per-checkout scratch — anything that
    cleans or re-syncs a checkout will otherwise silently delete them. See
    `ai/05`.
+10. **Agent-authored work gets an adversarial pass before it lands.** Its first
+    question is "is this the change that was asked for?" — the failure no gate
+    can see, because gates check a change against itself. A green pipeline is a
+    claim to verify, not evidence. See `ai/08`.
+
+> **Numbering is a contract.** Items 1–8 mirror `ai/00-execution-policy.md`'s
+> rule numbers exactly, so "rule 4" means the same thing in every repo and every
+> module that cites it. Items 9–10 are core rules whose depth lives elsewhere.
+> If you change one list, change the other in the same commit.
 
 ---
 
@@ -63,7 +77,7 @@ reverse** (pushing, opening PRs, deleting, anything that leaves the machine).
 
 A repository MAY grant a broader **autonomous ("yolo") mode** — agents operate
 with wide tool permissions and commit/push without per-step confirmation —
-**conditional on the execution policy (rules 1–8) being honored**. The instant
+**conditional on the execution policy (rules 1–7) being honored**. The instant
 those rules cannot be followed, drop out of autonomous mode and confirm with the
 user. Grant and scope this in the provider config (`ai/providers.md`), not here.
 

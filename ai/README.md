@@ -21,7 +21,9 @@ Gemini, Codex, …).
 | `05-agent-authoring.md` | Writing sub-agents; keeping definitions + memory in git. |
 | `06-knowledge-placement.md` | The pointer pattern: where each kind of knowledge belongs. |
 | `07-agent-roster.md` | The standing roster of specialists and the delegation policy. |
-| `agents/*.md` | Drop-in specialist definitions: coding-teacher, explorer, planner, reviewer. |
+| `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings. |
+| `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
+| `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer. |
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |
 | `templates/agent-template.md` | Provider-neutral sub-agent definition skeleton. |
