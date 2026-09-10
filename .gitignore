@@ -1,0 +1,13 @@
+# Nix build outputs
+/result
+/result-*
+
+# direnv
+/.direnv/
+
+# Agent scratch (repo-local, per ai/providers.md)
+/.tmp/
+
+# Editor / OS
+*.swp
+.DS_Store
