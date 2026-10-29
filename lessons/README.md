@@ -23,8 +23,9 @@ Review it like code. For each lesson, check:
 - **The bar.** Does it clear `ai/06`: portable, evidenced, behavioral?
 - **Already covered?** If the kit already says it, the lesson is evidence for
   that rule, not a new one.
-- **Publishable?** It must name no people, clients, products, hosts, ticket
-  numbers or paths, and contain no customer data or secrets. If anything slips
+- **Publishable and source-free?** It must name no people, clients, products,
+  hosts, ticket numbers or paths, contain no customer data or secrets, and not
+  say where it was learned (`ai/README.md` § Design stance). If anything slips
   through, ask the sender to fix it rather than editing it yourself: they
   approved that exact text.
 

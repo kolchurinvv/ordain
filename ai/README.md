@@ -1,12 +1,11 @@
 # AI workflow kit
 
-A provider-agnostic set of rules and scaffolding that gives any AI-enabled repo
+A tool- and model-agnostic set of rules and scaffolding that gives any AI-enabled repo
 the same robust agent behavior: no drift, clean incremental commits, disciplined
 CI, durable memory, and automation that removes the tedium of committing,
 pushing, and gating by hand.
 
-It drops into any repo and works with any agent (Claude Code, Cursor, Copilot,
-Gemini, Codex, …).
+It drops into any repository and works with any coding agent, harness or model.
 
 ## What's here
 
