@@ -40,3 +40,35 @@ entrypoint only in cheat-sheet form, with the authoritative detail pointed-to.
 When you learn something durable, ask "what's the *correct* home?" before
 defaulting to the entrypoint. Usually it's a decision record, a runbook, a
 commit message, or a memory — and the entrypoint gets at most a pointer.
+
+## Promoting a lesson out of a project
+
+Knowledge learned in one project lives first where that project's agents keep it
+(memories, instruction files, review findings, corrections in a transcript).
+Some of it is about *how agents should work anywhere*, and belongs in the kit so
+every adopting repository gets it. The `star-pupil` agent
+(`ai/agents/star-pupil.md`) harvests candidates; this is the bar they must clear.
+
+A lesson moves into the kit only if **all three** hold:
+
+1. **Portable.** It would hold in a repository with a different stack, team, and
+   product. Rewrite it without the project's names; if it stops making sense, it
+   is project-local.
+2. **Evidenced.** It came from something that happened: a failure it would have
+   prevented, a correction the user made, or an approach the user confirmed.
+   Independent sources (two projects, two tools) make it stronger.
+3. **Behavioral.** It changes what an agent does turn to turn. Background facts
+   don't qualify.
+
+Each candidate lands in exactly one place:
+
+| It is… | Home |
+|---|---|
+| Portable, evidenced, behavioral | The kit: a module rule (or the core, if it clears the entrypoint bar above), plus a Bindings row wherever a host must supply a value. |
+| About the person, not the work (how terse to be, how to report) | The user's personal profile, installed into each tool's global instruction file. Never a shared repository. |
+| True only of one project | That project: its decision records, runbooks, or Bindings. |
+| Already in the kit | Nowhere new. It is evidence for the existing rule; retire the source copy. |
+
+After promotion, the source copy is retired (deleted, or reduced to a pointer at
+the kit rule). Two live copies drift, and stale memory is worse than none
+(`ai/04`).
