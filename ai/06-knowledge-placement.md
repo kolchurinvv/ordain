@@ -56,7 +56,10 @@ A lesson moves into the kit only if **all three** hold:
    is project-local.
 2. **Evidenced.** It came from something that happened: a failure it would have
    prevented, a correction the user made, or an approach the user confirmed.
-   Independent sources (two projects, two tools) make it stronger.
+   Independent sources (two projects, two tools) make it stronger. The evidence
+   is weighed when the lesson is reviewed and is never written into the kit:
+   neither the lesson nor the commit that promotes it names where it came from
+   (`README.md` § Design stance).
 3. **Behavioral.** It changes what an agent does turn to turn. Background facts
    don't qualify.
 

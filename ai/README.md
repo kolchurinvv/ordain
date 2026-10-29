@@ -72,8 +72,18 @@ checkout instead of the installer.
 
 ## Design stance
 
-- **Content is provider-agnostic; entrypoints are thin.** Never fork the rules
-  per tool — point every tool at the same `AGENTS.md` + `ai/*`.
+- **Content is tool- and model-agnostic; adapters are thin and fenced off.**
+  No rule, module or agent may depend on a particular coding tool, harness or
+  model, or name one. What each tool needs in order to load the contract
+  (entrypoint files, import syntax, settings, where it stores memories) lives
+  only in `providers.md` and `templates/`. Never fork the rules per tool: point
+  every tool at the same `AGENTS.md` + `ai/*`.
+- **The kit carries no trace of where its knowledge came from.** No project,
+  product, client, person, incident, figure or prompt from the material it was
+  compiled from appears anywhere in this repository: not in the rules, the
+  examples, the lessons or the commit messages. A rule states the behavior and
+  the general failure it prevents. Evidence is weighed during review and then
+  left behind; it is never stored.
 - **The instruction file is an index, not a junk drawer.** Decisions go in
   decision records, procedures in runbooks, history in commit messages, durable
   facts in memory — the entrypoint gets pointers (`06-knowledge-placement.md`).
