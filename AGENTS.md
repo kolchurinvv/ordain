@@ -6,12 +6,23 @@ Zed, and others read it). Provider-specific entrypoints (`CLAUDE.md`,
 `GEMINI.md`, `.github/copilot-instructions.md`) should **point here**, not fork
 it — see `ai/providers.md`.
 
-This file is the index and the non-negotiable core. The depth lives in the
-`ai/` modules; read the relevant one before doing the work it governs.
+This repository is `ord-ai-n`, the home of the kit itself: the contract below is
+the product, and this file carries it the same way any adopting repository does.
+To adopt it elsewhere, see `ai/README.md`.
 
----
+<!-- ord-ai-n:core:begin -->
+## Agent working contract
 
-## The modules
+<!-- Generated from ai/CORE.md by ai/sync.sh — do not edit this block in place;
+     the next sync overwrites it. Repo-specific values belong in Bindings. -->
+
+How AI agents work in this repository, whatever the tool or model. This block is
+the non-negotiable core; the depth lives in the `ai/` modules — read the relevant
+one before doing the work it governs. `<angle-bracket>` placeholders are bound
+once, in this file's **Bindings** section. Where the Bindings or this
+repository's decision records say otherwise, they win over the kit's defaults.
+
+### The modules
 
 | When you are… | Read |
 |---|---|
@@ -26,9 +37,7 @@ This file is the index and the non-negotiable core. The depth lives in the
 | Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 
----
-
-## Non-negotiable core (the short version)
+### Non-negotiable core
 
 These are the rules that change turn-to-turn behavior. The modules expand each.
 
@@ -68,9 +77,7 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
 > module that cites it. Items 9–10 are core rules whose depth lives elsewhere.
 > If you change one list, change the other in the same commit.
 
----
-
-## Autonomy level
+### Autonomy level
 
 The default posture is **propose-then-act for anything outward-facing or hard to
 reverse** (pushing, opening PRs, deleting, anything that leaves the machine).
@@ -79,14 +86,31 @@ A repository MAY grant a broader **autonomous ("yolo") mode** — agents operate
 with wide tool permissions and commit/push without per-step confirmation —
 **conditional on the execution policy (rules 1–7) being honored**. The instant
 those rules cannot be followed, drop out of autonomous mode and confirm with the
-user. Grant and scope this in the provider config (`ai/providers.md`), not here.
+user. Grant and scope this in the provider config (`ai/providers.md`), and record
+what is granted in Bindings.
 
----
-
-## Sources of truth
+### Sources of truth
 
 Stack and architectural decisions come from exactly two places: **the user**, or
-the repository's **decision records** (e.g. `docs/decisions/*`, ADRs). Nothing
-else — do not infer choices from sibling repos, prior conventions, or training
-priors. If the decision records are silent, ask the user. This file governs
-*how* you work; the decision records govern *what* you build.
+the repository's **decision records** (e.g. `docs/decisions/*`, ADRs — Bindings
+names this repository's). Nothing else — do not infer choices from sibling repos,
+prior conventions, or training priors. If the decision records are silent, ask
+the user. This block governs *how* you work; the decision records govern *what*
+you build.
+<!-- ord-ai-n:core:end -->
+
+## Bindings
+
+The values this repository gives the core's placeholders. Unbound entries say so
+rather than staying silent.
+
+| Binding | Here |
+|---|---|
+| `<gate-command>` | **None yet.** The only verification is `nix flake check` plus `ai/sync.sh --check .`; say so rather than claiming a gate ran. |
+| `<base>` branch | `main` |
+| Commit / branch convention | Conventional Commits (`ai/01`); branches `<type>/<short-slug>`. |
+| Decision records | None yet; decisions come from the user. |
+| Status doc (rule 5) | None yet (no root `README.md`); `ai/README.md` describes the kit. |
+| Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
+| Memory root | Harness-local only; no tracked memory root. |
+| Autonomy | Not granted: propose-then-act. |
