@@ -32,22 +32,70 @@ Gemini, Codex, …).
 | `templates/claude.settings.json` | Yolo-but-guarded permissions profile. |
 | `templates/gate.just` | The `check` / `precommit` / `hook-install` / `ci-watch` recipe contract. |
 
-## Install (any repo)
+## Adopt it in a repository
 
-1. Copy `AGENTS.md` and this `ai/` directory to the repo root.
-2. Point each provider's entrypoint at `AGENTS.md` (symlink or one-line stub) —
-   see `providers.md`.
-3. Bind the repo-specific placeholders, chiefly `<gate-command>`. Add the gate
-   recipes from `templates/gate.just`.
-4. Install the hook: `cp ai/templates/pre-commit .githooks/ && chmod +x
-   .githooks/pre-commit && just hook-install`.
-5. For Claude Code, drop `templates/claude.settings.json` at
-   `.claude/settings.json` and edit the placeholders to set your autonomy level.
-6. Drop the specialists you want into the host's agent dir (e.g. `cp
-   ai/agents/*.md .claude/agents/`), and bind their `<...>` placeholders. The
-   delegation policy is `07-agent-roster.md`.
-7. Commit everything — agent definitions and memory must be tracked
+The kit travels as a **vendored, read-only `ai/` directory** plus **one generated
+block in the host's `AGENTS.md`**. Everything repo-specific lives in the host's
+own files, never under `ai/`, so a re-sync is a plain copy and its diff is
+exactly the kit's change.
+
+Nobody adopting the kit can promise which harness or model will read it, so it
+takes hold in three layers, from weakest guarantee to strongest:
+
+1. **The inline core.** The ten rules, generated into `AGENTS.md`, which nearly
+   every coding agent loads unprompted. A model that follows no pointer still
+   reads them.
+2. **The modules.** `ai/*.md` hold the depth, for agents that follow the core's
+   pointers.
+3. **Mechanical enforcement.** Hooks and CI checks bind whatever wrote the
+   change, including an agent that read nothing. A rule that matters and that a
+   script can check should be checked by one.
+
+### Steps
+
+1. **Mark where the block goes.** In the host's `AGENTS.md` (create one with a
+   title if it has none), add these two lines near the top, after the project
+   summary. The sync never guesses a placement.
+   ```
+   <!-- ord-ai-n:core:begin -->
+   <!-- ord-ai-n:core:end -->
+   ```
+2. **Sync.** From an ord-ai-n checkout with no uncommitted changes, run
+   `ai/sync.sh <host-repo>`. It copies `ai/`, records the kit version and each
+   file's hash in `ai/.kit-manifest`, and regenerates the block from
+   `ai/CORE.md`.
+3. **Write the host's Bindings.** Directly after the block, add a `## Bindings`
+   section that binds each placeholder to this repository: the gate command and
+   what to do where it cannot run, the base branch, the commit and branch
+   convention, the decision records, the status docs, the generated baselines,
+   how to watch CI, the memory root, where agent definitions live, and the
+   autonomy granted. An entry with no value says so ("none: …"); never leave one
+   silently unbound.
+4. **Reconcile, don't stack.** Where the host already has rules (a constitution,
+   a commit convention, its own review skill), the host's documents win over the
+   kit's defaults. Record that in Bindings, and point the host's existing tools
+   at the matching module instead of adding a parallel one.
+5. **Wire the entrypoints** for tools that don't read `AGENTS.md` themselves
+   (`providers.md`). For Claude Code, that is a `CLAUDE.md` that starts with
+   `@AGENTS.md`. Optionally, drop the specialists you want into the host's agent
+   dir (e.g. `cp ai/agents/*.md .claude/agents/`, delegation policy in
+   `07-agent-roster.md`), and set the autonomy level from
+   `templates/claude.settings.json`.
+6. **Enforce what can be enforced.** At minimum, run `ai/sync.sh --check .` in CI
+   so neither the block nor `ai/` can be edited in place. Then add a gate and a
+   hook (`templates/gate.just`, `templates/pre-commit`) and CI checks for the
+   host's own load-bearing rules.
+7. **Commit all of it.** Agent definitions and memory must be tracked
    (`05-agent-authoring.md`).
+
+The kit must live at `ai/` in the host, because its modules cite each other by
+that path.
+
+### Re-sync
+
+Run `ai/sync.sh <host-repo>` again and commit the result on its own. Never edit
+`ai/` or the block in the host: change them in ord-ai-n and sync. `--check`
+fails on in-place edits and on files under `ai/` that the kit does not ship.
 
 ## Design stance
 
