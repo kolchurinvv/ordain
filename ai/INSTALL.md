@@ -41,6 +41,15 @@ cd add-agent-contract
 
 `--no-track` keeps the new branch from pushing to `main` by accident.
 
+If git says `invalid reference: origin/main`, the bare repository was cloned
+without a fetch refspec (a plain `git clone --bare` doesn't set one). Set it
+once, then fetch and run the `worktree add` line again:
+
+```sh
+git -C .bare config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+git -C .bare fetch origin
+```
+
 ### 2. Mark where the rules go
 
 Open `AGENTS.md` (create it with a `# AGENTS.md` title if the repository has
