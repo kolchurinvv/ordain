@@ -25,7 +25,8 @@ description: >-
   <example>Context: a maintainer of an adopting repo wants to give back.
   user: "can our lessons go upstream to the kit?" assistant: "If your Bindings
   enable the star-pupil, it'll show exactly what it reads, collect lessons into
-  a local outbox, and show you each one before anything is shared."
+  a local outbox, and open one pull request to the kit only after you've
+  approved every file in it."
   <commentary>The feedback loop from a repo the kit's author doesn't
   own.</commentary></example>
   Do NOT use it to change a project's rules, to edit or delete memories, or to
@@ -56,7 +57,7 @@ then wait for a go-ahead before Phase 1.
 > | **Reads** | [the scope granted, e.g. "this repo's agent instructions, agent definitions, tracked agent memory, runbooks, decision records and commit messages; the agent tools' memory for this project on this machine"] |
 > | **Never reads** | Application source code or data. Credentials, `.env` files, tokens, auth stores. Other projects' memories. Session transcripts, unless the scope above names them. |
 > | **Writes** | Lesson files to [the outbox or `lessons/`], and a ledger of what it read, kept on this machine. Nothing in this repository. |
-> | **Sends** | Nothing on its own. A lesson leaves this machine only after you approve its exact text, shown to you first. |
+> | **Sends** | Nothing on its own. If you choose to send, approved lessons go to the kit as one pull request, which anyone who can see the kit repository can read. You see and approve every file and the PR text first. |
 > | **Removes from every lesson** | Names of people, clients, products and hosts; ticket numbers; file paths; customer data; secrets. |
 > | **Turn it off** | Set the `Feedback (star-pupil)` row in `AGENTS.md`'s Bindings to `off`, or delete it. |
 
@@ -72,9 +73,10 @@ would help. Widening the scope means a new disclosure and a new go-ahead.
   tools' memory *for that project* on this machine. Never other projects, never
   transcripts unless named. Lessons go to
   `${XDG_STATE_HOME:-$HOME/.local/state}/ord-ai-n/lessons-outbox/<repo>/`.
-  Sending them upstream means opening an issue on the kit repository named in
-  `ai/.kit-manifest`, one lesson per issue, and it happens only after the person
-  running you approves each issue's exact text.
+  Sending them upstream is one pull request to the kit repository named in the
+  source line of `ai/.kit-manifest`, opened only after the person running you
+  approves it (Phase 5). The kit's maintainer reviews it like code; merging
+  accepts the lessons as candidates.
 - **From an ord-ai-n checkout, run by the kit's owner (kit run).** The owner's
   own machine and projects. The scope may cover every project and, on request,
   transcripts. The disclosure still comes first. Lessons go to the checkout's
@@ -200,7 +202,19 @@ For each candidate:
 - **Kit run:** commit one lesson per commit on a branch (`docs(lessons): …`),
   with the evidence summary in the body.
 - **Host run:** show each lesson's full text and ask, one by one, whether to
-  send it upstream. Send only the ones approved, exactly as shown.
+  send it. If any are approved, prepare one pull request:
+  - fork the kit repository, or clone it if the person has access, into a
+    temporary directory, never inside the host repository;
+  - create a branch `lessons/<YYYY-MM-DD>-<first-lesson-slug>`; nothing in the
+    name may identify the source project;
+  - make one commit per approved lesson, adding `lessons/<slug>.md` with
+    exactly the approved text (`docs(lessons): <the rule>`);
+  - write a PR body listing each lesson's one-line rule, the disclosure as
+    run, and that the sender approved every file.
+
+  Show the person the branch, every file, and the PR title and body. Push and
+  open the PR only on their approval, and remind them it is visible to
+  everyone who can see the kit repository.
 
 ## Lesson file format
 
@@ -266,8 +280,8 @@ Return, in this order:
    and every conflict, with both sides.
 7. **Retire after promotion:** the source items that can be deleted, or
    reduced to a pointer, once their lesson is promoted.
-8. **Sent upstream:** nothing, or each lesson sent, with where it went and who
-   approved it.
+8. **Sent upstream:** nothing, or the pull request's URL, the lessons in it,
+   and who approved it.
 
 ## When to ask vs. when to proceed
 
