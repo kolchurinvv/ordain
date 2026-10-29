@@ -111,17 +111,19 @@ if [ "$target" != "$kit_root" ] && [ "$force" = 0 ]; then
   fi
 fi
 
-# What to copy, and from which kit version: the kit checkout's files.
+# What to copy, and which kit version it is. install.sh names a downloaded kit through
+# ORD_AI_N_SOURCE; a local checkout is named by its commit.
 if git -C "$kit_root" rev-parse --git-dir >/dev/null 2>&1; then
   # Tracked plus not-yet-added files: what the kit's next commit would ship.
   files=$(cd "$kit_root" && git ls-files --cached --others --exclude-standard ai |
           while IFS= read -r f; do if [ -f "$f" ]; then echo "$f"; fi; done | sort -u)
-  version=$(git -C "$kit_root" describe --always)
+  version="ord-ai-n@$(git -C "$kit_root" describe --always)"
   [ -z "$(git -C "$kit_root" status --porcelain -- ai)" ] || version="$version-dirty"
 else
   files=$(cd "$kit_root" && find ai -type f | sort)
   version=unknown
 fi
+version=${ORD_AI_N_SOURCE:-$version}
 [ -n "$files" ] || die "no kit files found under $kit_ai"
 
 if [ "$target" != "$kit_root" ]; then
@@ -139,8 +141,8 @@ if [ "$target" != "$kit_root" ]; then
   done <<<"$files"
   {
     echo "# ord-ai-n agent kit, vendored by ai/sync.sh. Do not edit the files listed here:"
-    echo "# change them in ord-ai-n and re-sync. Verify with: ai/sync.sh --check ."
-    echo "# source: ord-ai-n $version"
+    echo "# change them in ord-ai-n and re-run its installer (ai/README.md). Verify: ai/sync.sh --check ."
+    echo "# source: $version"
     (cd "$target" && while IFS= read -r f; do sha "$f"; done <<<"$files")
   } >"$target/$MANIFEST"
 fi
@@ -155,7 +157,7 @@ trap 'rm -f "$tmp"' EXIT
 } >"$tmp"
 cat "$tmp" >"$agents"
 
-echo "sync: $target now carries ord-ai-n $version"
+echo "sync: $target now carries $version"
 case "$version" in
   *-dirty) echo "sync: the kit has uncommitted changes; commit them and re-sync before committing $target" >&2 ;;
 esac

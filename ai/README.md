@@ -15,6 +15,7 @@ Gemini, Codex, …).
 | `../AGENTS.md` | Provider-neutral entrypoint: the core block (generated from `CORE.md`) + this repo's Bindings. |
 | `CORE.md` | The non-negotiable core and module index: the block `sync.sh` generates into every adopting repo's `AGENTS.md`. |
 | `sync.sh` | Vendors the kit into a repo (`sync.sh <repo>`); verifies a vendored copy (`sync.sh --check <repo>`). |
+| `../install.sh` | The `curl \| bash` entry point: downloads the kit at one commit and runs its `sync.sh` on the current repo. |
 | `00-execution-policy.md` | How agents operate: incremental commits, known-good start, append-only baselines, ratchet-only gates, conditional autonomy. |
 | `01-commit-and-pr-hygiene.md` | The gate, commit messages (host convention first), branching/worktrees, PRs, milestone tags. |
 | `02-ci-discipline.md` | Watch every push to green; use the poll recipe; artifact triage. |
@@ -60,10 +61,17 @@ takes hold in three layers, from weakest guarantee to strongest:
    <!-- ord-ai-n:core:begin -->
    <!-- ord-ai-n:core:end -->
    ```
-2. **Sync.** From an ord-ai-n checkout with no uncommitted changes, run
-   `ai/sync.sh <host-repo>`. It copies `ai/`, records the kit version and each
-   file's hash in `ai/.kit-manifest`, and regenerates the block from
-   `ai/CORE.md`.
+2. **Install.** From the host repo's root:
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
+   ```
+   It downloads the kit at one exact commit and runs that version's
+   `ai/sync.sh`. That copies `ai/`, records the source commit and each file's
+   hash in `ai/.kit-manifest`, and regenerates the block from `ai/CORE.md`. Pin
+   a version with `bash -s -- --ref <tag-or-sha>`. While the kit repo is
+   private, add `-H "Authorization: Bearer $(gh auth token)"` to the `curl`; the
+   installer authenticates its own downloads the same way. When developing the
+   kit itself, run `ai/sync.sh <host-repo>` from your checkout instead.
 3. **Write the host's Bindings.** Directly after the block, add a `## Bindings`
    section that binds each placeholder to this repository: the gate command and
    what to do where it cannot run, the base branch, the commit and branch
@@ -91,11 +99,13 @@ takes hold in three layers, from weakest guarantee to strongest:
 The kit must live at `ai/` in the host, because its modules cite each other by
 that path.
 
-### Re-sync
+### Update
 
-Run `ai/sync.sh <host-repo>` again and commit the result on its own. Never edit
-`ai/` or the block in the host: change them in ord-ai-n and sync. `--check`
-fails on in-place edits and on files under `ai/` that the kit does not ship.
+Re-run the install line in the host and commit the result on its own; its diff
+is exactly the kit's change. Never edit `ai/` or the block in the host: change
+them in ord-ai-n, then update. `--check` fails on in-place edits and on files
+under `ai/` that the kit does not ship. Sync refuses to overwrite an `ai/` it
+didn't write or one with uncommitted changes, unless given `--force`.
 
 ## Design stance
 
