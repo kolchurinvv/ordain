@@ -31,23 +31,32 @@ single source of truth for "what passes." See `ai/templates/pre-commit`.
 to the aggregate in the *same* commit series — otherwise the gate silently skips
 it and the coverage is a lie.
 
-## Conventional commits
+## Commit messages
 
-Use Conventional Commits: `type(scope): summary`.
+**The repository's own convention wins.** If it has one (a ticket-key prefix
+like `[ABC-123] Subject`, a decision record, a commit-lint config), follow it —
+it is a binding, recorded in the repo's Bindings section. Check the last few
+merged PRs too: the merge style (squash vs. merge commit) decides which message
+reaches the default branch, so it decides where the convention matters most.
+
+Where the repository has no convention, use Conventional Commits:
+`type(scope): summary`.
 
 - Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `perf`, `build`,
   `ci`, `style`.
 - Agent-infrastructure changes get a clear scope: `chore(agents):` /
   `feat(agents):` for agent-definition edits, `chore(goldens):` for approved
   baseline regen.
-- The body carries the *why* and any approval the policy requires recorded
-  in-message ("user-approved regeneration", "threshold raise approved"). The
-  commit message is the durable home for change rationale — see
-  `ai/06-knowledge-placement.md`.
+
+Whatever the subject format, the **body** carries the *why* and any approval the
+policy requires, recorded in-message ("user-approved regeneration", "threshold
+raise approved"). The commit message is the durable home for change rationale —
+see `ai/06-knowledge-placement.md`.
 
 ## Branching
 
-Never commit straight to the default branch. Branch first:
+Never commit straight to the default branch. Branch first, named per the
+repository's convention (a binding); with none, use:
 
 ```
 git switch -c <type>/<short-slug>

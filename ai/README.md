@@ -16,7 +16,7 @@ Gemini, Codex, …).
 | `CORE.md` | The non-negotiable core and module index: the block `sync.sh` generates into every adopting repo's `AGENTS.md`. |
 | `sync.sh` | Vendors the kit into a repo (`sync.sh <repo>`); verifies a vendored copy (`sync.sh --check <repo>`). |
 | `00-execution-policy.md` | How agents operate: incremental commits, known-good start, append-only baselines, ratchet-only gates, conditional autonomy. |
-| `01-commit-and-pr-hygiene.md` | The gate, conventional commits, branching/worktrees, PRs, milestone tags. |
+| `01-commit-and-pr-hygiene.md` | The gate, commit messages (host convention first), branching/worktrees, PRs, milestone tags. |
 | `02-ci-discipline.md` | Watch every push to green; use the poll recipe; artifact triage. |
 | `03-defensive-coding.md` | Never crash on external failure — the six boundaries. |
 | `04-memory-framework.md` | File-based cross-session memory; stale memory is worse than none. |
