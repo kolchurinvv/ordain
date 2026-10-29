@@ -11,8 +11,7 @@ description: >-
   across-the-repo task — delegate and keep the summary.</commentary></example>
   Specify breadth when you invoke it: "medium" for a focused sweep, "very
   thorough" for multiple locations and naming conventions.
-color: green
-# Read-only: grant search/read tools only — no Edit/Write.
+# Read-only: search and read tools only, no file editing.
 ---
 
 You are a code-search specialist. You find things fast across a large codebase

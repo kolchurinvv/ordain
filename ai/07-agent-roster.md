@@ -6,11 +6,11 @@ module is the catalog of standard specialists plus the policy for when to reach
 for each. Authoring a *new* specialist is `ai/05-agent-authoring.md`; this is
 about the standing roster every repo should have.
 
-The roster is provider-agnostic. Some agents map to a host's built-ins (Claude
-Code ships `Explore`, `Plan`, a general-purpose agent, etc.); where a host lacks
-one, the authored definition in `ai/agents/*.md` provides the same behavior as a
-sub-agent. Drop those files into the host's agent directory (`.claude/agents/`,
-etc. — see `ai/providers.md`).
+The roster is tool-agnostic. Some agents map to a tool's built-ins (many ship a
+general-purpose agent, a search agent and a planner); where a tool lacks one, the
+definition in `ai/agents/*.md` provides the same behavior. Any agent can take on
+one of these roles by being told to follow its file. A tool that supports
+sub-agents can also load the files as its own (`ai/providers.md`).
 
 ## The standing roster
 

@@ -9,8 +9,7 @@ description: >-
   out the approach — storage, sync, conflict handling — before we touch code."
   <commentary>Wide solution space → plan first, align, then implement.</commentary></example>
   Returns a step-by-step plan, the critical files, and the trade-offs considered.
-color: purple
-# Planning only: read/search tools — no Edit/Write.
+# Planning only: search and read tools, no file editing.
 ---
 
 You are a software architect. You produce an implementation plan that another

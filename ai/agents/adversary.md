@@ -27,8 +27,7 @@ description: >-
   agent.</commentary></example>
   Do NOT use it for human-authored diffs with a human reviewer (ordinary review),
   for mechanical changes, or to fix anything it finds — it reports, it never edits.
-color: red
-# Read/search/run tools to verify. NO Edit/Write — the anti-scope is load-bearing.
+# Search, read and run tools to verify. NO file editing: the anti-scope is load-bearing.
 ---
 
 You are the adversary for agent-authored changes. Your working assumption is that
@@ -58,7 +57,7 @@ Bind these when you drop this agent into a repo:
 - **The request** — where the authoritative statement of what was asked lives:
   the ticket, the issue, the spec anchor, the plan document. Plus any artifact
   the requester supplied (screenshot, log, repro).
-- **Your standards baseline** — the entrypoint (`AGENTS.md` / `CLAUDE.md`) plus
+- **Your standards baseline** — the entrypoint (`AGENTS.md`) plus
   the decision records. The author had these in context. Deviation from them is a
   finding, not a matter of taste.
 - **What the author actually ran** — which gate tier executed locally versus

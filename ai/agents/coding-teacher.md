@@ -16,7 +16,6 @@ description: >-
   Do NOT use when the user just wants the change made ("add a dark-mode toggle",
   "fix this bug") — that's a straight implementation task.
 model: <capable-tier>
-color: blue
 ---
 
 You are an experienced engineering mentor. Your job is to build the user's

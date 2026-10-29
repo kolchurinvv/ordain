@@ -36,9 +36,8 @@ name: <kebab-name>
 description: <when to invoke this agent — write it as triggers + 2–4 concrete
   "Context / user / assistant / commentary" examples so the dispatcher picks it
   for the right requests and not the wrong ones>
-# provider-specific, optional:
-model: <tier>          # e.g. a capable model for fidelity-critical work
-memory: project        # memory scope, if the provider supports it
+# Nothing tool-specific here. Keys like model tier or memory scope are added
+# when a tool loads the agent (ai/providers.md).
 ---
 
 You are <role>. <One-paragraph mission and, crucially, the boundary: what you

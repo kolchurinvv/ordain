@@ -5,8 +5,8 @@ unconditional. Rule 8 (autonomous mode) is *conditional* on the others being
 honored. These are the rules that prevent drift and laziness; treat them as
 load-bearing, not advisory.
 
-> Placeholders in `<angle-brackets>` are repo-specific — bind them once in your
-> provider entrypoint (`CLAUDE.md` etc.) or a top-of-repo note. The canonical
+> Placeholders in `<angle-brackets>` are repo-specific — bind them once, in the
+> Bindings section of the repository's `AGENTS.md`. The canonical
 > one is `<gate-command>`: the single command that runs the full local check
 > aggregate (see `ai/01-commit-and-pr-hygiene.md`).
 

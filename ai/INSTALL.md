@@ -124,15 +124,16 @@ point at them in Bindings and say which document wins. Don't copy them in.
 
 ### 5. Wire the tools that don't read `AGENTS.md`
 
-- **Claude Code.** With no `CLAUDE.md`: `printf '@AGENTS.md\n' > CLAUDE.md`.
-  With one: add `@AGENTS.md` as its first line.
-- **Other tools:** see `providers.md`.
+Most coding agents read `AGENTS.md` by themselves. Some read their own file
+instead, or stop reading `AGENTS.md` once their own file exists. For each tool
+the repository's contributors actually use, make its entrypoint import
+`AGENTS.md` rather than copy it. `providers.md` says how, per tool.
 
 ### 6. Check, commit, open the PR
 
 ```sh
 ai/sync.sh --check .
-git add ai AGENTS.md CLAUDE.md
+git add ai AGENTS.md   # plus any entrypoint files from step 5
 git commit        # the repository's message format; name the source line from ai/.kit-manifest
 ```
 
@@ -168,7 +169,7 @@ git rm -r ai
 ```
 
 Then delete the marked block and the Bindings section from `AGENTS.md`, the
-`@AGENTS.md` line from `CLAUDE.md` if you added it, and the CI job if you added
+imports you added to tool entrypoints in step 5, and the CI job if you added
 one. Commit.
 
 ## Sending lessons back (optional)
@@ -178,8 +179,8 @@ agents learned in this repository into lessons for the kit. It is off until the
 `Feedback (star-pupil)` row in Bindings says `on` and names what it may read.
 
 To run it in any tool, ask the agent to act as the agent defined in
-`ai/agents/star-pupil.md`. In Claude Code you can also copy that file into
-`.claude/agents/`.
+`ai/agents/star-pupil.md`. Tools that support sub-agents can also load it as
+one (`providers.md`).
 
 1. **It shows its disclosure first.** Before reading anything, it prints a
    table of what it will read, never read, write, send, and strip out, and

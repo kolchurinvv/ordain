@@ -1,11 +1,9 @@
 # AGENTS.md
 
-Provider-neutral operating contract for AI coding agents in this repository.
-`AGENTS.md` is the emerging cross-tool standard filename (Cursor, Codex, Aider,
-Zed, Copilot's coding agent, and Claude Code when no `CLAUDE.md` exists read
-it). Provider-specific entrypoints (`CLAUDE.md`, `GEMINI.md`,
-`.github/copilot-instructions.md`) should **import or point here**, not fork it —
-see `ai/providers.md`.
+Tool- and model-neutral operating contract for AI coding agents in this
+repository. `AGENTS.md` is the cross-tool convention most coding agents read on
+their own. A tool that reads a different file is wired to import this one
+(`ai/providers.md`), never given a copy.
 
 This repository is `ord-ai-n`, the home of the kit itself: the contract below is
 the product, and this file carries it the same way any adopting repository does.
@@ -118,3 +116,14 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
+
+## Developing the kit
+
+- The dev shell comes from the Nix flake (`flake.nix`, nixpkgs `nixos-unstable`,
+  Linux and macOS on x86_64 and aarch64). Enter it with `nix develop`.
+- Add tools to `devShells.default` in `flake.nix` rather than installing them
+  globally, then re-enter the shell.
+- Refresh the lock with `nix flake update` only when asked, in its own commit
+  (Bindings: generated baselines).
+- Test changes to `ai/sync.sh` or `install.sh` against a scratch repository,
+  never against a real adopter.

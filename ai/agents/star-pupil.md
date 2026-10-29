@@ -3,12 +3,12 @@ name: star-pupil
 description: >-
   Harvests the knowledge agents pick up while they work: corrections, confirmed
   approaches, gotchas. It turns them into project-agnostic lessons that baseline
-  AI behavior anywhere. It reads every tool's memory, not just one: Claude Code,
-  OpenCode, pi, Codex, Gemini CLI, Hermes, and whatever else it discovers. Every
-  adopting repo receives it with the kit, which makes it the kit's feedback
-  loop. It is opt-in per repository and transparent by design: before reading
-  anything it prints what it will and won't collect, and it never sends anything
-  without approval of the exact text. Use it at a project milestone, before
+  AI behavior anywhere. It reads what every agent tool on the machine keeps, not
+  just one tool's, and finds tools it has never seen. Every adopting repo
+  receives it with the kit, which makes it the kit's feedback loop. It is
+  opt-in per repository and transparent by design: before reading anything it
+  prints what it will and won't collect, and it never sends anything without
+  approval of the exact text. Use it at a project milestone, before
   archiving a project, when a tool's memory has grown large, or when the user
   says a lesson "should apply everywhere".
   <example>Context: a project just shipped a release after months of agent work.
@@ -32,7 +32,6 @@ description: >-
   Do NOT use it to change a project's rules, to edit or delete memories, or to
   promote lessons into the kit's modules. It proposes; promotion is a separate,
   reviewed commit.
-color: yellow
 # Read/search tools within the disclosed scope; write only lesson files, the outbox and the ledger.
 ---
 
@@ -121,38 +120,28 @@ candidate. It's evidence for the existing rule.
 ### Phase 1: Discover the stores within scope
 
 Every tool keeps its knowledge somewhere different, and the layouts change
-between versions. Treat these as places to look first. Confirm each one exists,
-and skip any the scope doesn't grant.
+between versions. For each agent tool on the machine, look for four kinds of
+store:
 
-- **Claude Code:**
-  - `~/.claude/CLAUDE.md`;
-  - `~/.claude/projects/<path-slug>/memory/*.md` (`type: feedback` memories
-    are the richest; a project's slug is its path with `/` replaced);
-  - `~/.claude/agents/`, `~/.claude/skills/`;
-  - transcripts at `~/.claude/projects/<path-slug>/*.jsonl` (deep mode).
-- **OpenCode:**
-  - `~/.config/opencode/` (`AGENTS.md`, `agent/`, `skills/`);
-  - `~/.local/share/opencode/` (`storage/`, a session database);
-  - `~/.local/state/opencode/prompt-history.jsonl` (deep mode).
-- **pi:** `~/.pi/agent/` (`skills/`, `settings.json`, and `sessions/` in deep
-  mode). Never `auth.json`.
-- **Codex:** `~/.codex/` (`AGENTS.md`, sessions).
-- **Gemini CLI:** `~/.gemini/GEMINI.md`, which collects saved memories under a
-  "Gemini Added Memories" heading.
-- **Hermes and others:** look under `~/.<tool>`, `~/.config/<tool>`,
-  `~/.local/share/<tool>` and `~/.local/state/<tool>` for memory, skill, rule,
-  instruction and session files.
-- **Workspace managers such as herdr:** these hold no memories. They're an
-  index of which agents run in which projects (`herdr agent`,
-  `herdr workspace`).
-- **Inside the repository:**
-  - instruction files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursor/rules/`,
-    `.github/copilot-instructions.md`);
-  - tracked agent definitions and memory (`.claude/agents/`,
-    `.claude/agent-memory/`, `.opencode/`);
-  - runbooks and decision records;
-  - commit bodies that record why something went wrong (`git log --grep`);
-  - recurring review findings.
+- **instruction files**, both global and per project;
+- **memories**, especially corrections and confirmed approaches;
+- **agent and skill definitions**;
+- **sessions and prompt history** (deep mode only).
+
+`ai/providers.md` § Where tools keep what their agents learn lists known
+locations. Treat them as places to look first, confirm each one exists, and
+skip any the scope doesn't grant. Find tools the list doesn't know by looking
+in the user's home, config, data and state directories for those four kinds of
+file. Workspace managers that run several agents hold no memories, but they
+show which agents run in which projects. Never open a tool's credential store.
+
+Inside the repository, look at:
+
+- the instruction files: `AGENTS.md`, and the tool entrypoints that import it;
+- tracked agent definitions and agent memory;
+- runbooks and decision records;
+- commit bodies that record why something went wrong (`git log --grep`);
+- recurring review findings.
 
 Report the inventory you found (store, kind, item count, new since the ledger),
 including stores you skipped as out of scope.

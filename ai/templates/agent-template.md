@@ -6,10 +6,9 @@ description: >-
   <example>Context: <situation>. user: "<what the user says>"
   assistant: "<how the main agent hands off>"
   <commentary><why this is the right agent and what it hands back></commentary></example>
-# Optional, provider-specific (Claude Code shown; omit for tools that ignore them):
-model: <capable-tier-for-this-work>
-color: <ui-color>
-memory: project
+# Keep definitions tool-neutral: name and description only. Tool-specific keys
+# (model tier, colour, memory scope, tool grants) are added when a tool loads
+# the agent; see ai/providers.md.
 ---
 
 You are <role — a specific identity, not "a helpful assistant">. <One paragraph:

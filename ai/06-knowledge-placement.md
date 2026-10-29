@@ -1,7 +1,7 @@
 # Knowledge placement (the pointer pattern)
 
 The instruction file is not a junk drawer. Every durable fact has a *correct*
-home, and the entrypoint (`AGENTS.md` / `CLAUDE.md`) gets a **pointer** to it —
+home, and the entrypoint (`AGENTS.md`) gets a **pointer** to it —
 not a copy. This is what keeps the entrypoint small enough to actually be read
 every session.
 
@@ -18,7 +18,7 @@ every session.
 
 ## The bar for putting something in the entrypoint
 
-A rule earns a line in `AGENTS.md` / `CLAUDE.md` only if **both**:
+A rule earns a line in `AGENTS.md` only if **both**:
 
 1. it changes how the agent behaves *turn to turn* (not just background
    context), **and**

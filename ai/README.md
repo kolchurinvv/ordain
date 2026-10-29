@@ -30,7 +30,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |
 | `templates/agent-template.md` | Provider-neutral sub-agent definition skeleton. |
-| `templates/claude.settings.json` | Yolo-but-guarded permissions profile. |
+| `templates/claude.settings.json` | Adapter for one tool: an example yolo-but-guarded permissions profile. |
 | `templates/gate.just` | The `check` / `precommit` / `hook-install` / `ci-watch` recipe contract. |
 
 ## Adopt it in a repository

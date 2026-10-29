@@ -51,7 +51,8 @@ Every extra entrypoint is a file somebody has to recognise as generated.
   protects baselines and forbids writes to sibling repos. Autonomy is granted
   *here*, conditional on the execution policy (`ai/00`).
 - **Sub-agents** go in `.claude/agents/*.md` with frontmatter `name`,
-  `description`, optional `model`, `color`, `memory`. Track them.
+  `description`, optional `model`, `color`, `memory` (see § Loading the kit's
+  agents). Track them.
 - CI-watch and other recurring read-only commands belong in the `allow` list so
   they don't burn an approval round-trip each run.
 
@@ -70,6 +71,44 @@ Every extra entrypoint is a file somebody has to recognise as generated.
 - If it reads `AGENTS.md`, it gets the contract and can follow the pointers into
   `ai/*` on demand. If it reads nothing automatically, paste `AGENTS.md` into
   its system prompt / rules field.
+
+## Loading the kit's agents
+
+The definitions in `ai/agents/` carry only `name` and `description`, so any tool
+can use them. Any agent can take on one of them by being told to follow the
+file. A tool with sub-agent support can also load them as its own:
+
+- **Claude Code:** copy the file into `.claude/agents/`, adding `model`,
+  `color` or `memory` if you want them. Track the copy.
+- **Other tools:** use the tool's own agent or mode directory, if it has one.
+
+## Where tools keep what their agents learn
+
+Known locations, for the `star-pupil`'s discovery step (`ai/agents/star-pupil.md`
+§ Phase 1). Layouts change between versions, so these are places to look first,
+not guarantees. Paths are for Unix-like systems.
+
+| Tool | Instructions | Memories | Agents and skills | Sessions (deep mode) |
+|---|---|---|---|---|
+| **Claude Code** | `~/.claude/CLAUDE.md` | `~/.claude/projects/<path-slug>/memory/*.md`; `type: feedback` are the richest. The slug is the project path with `/` replaced. | `~/.claude/agents/`, `~/.claude/skills/` | `~/.claude/projects/<path-slug>/*.jsonl` |
+| **OpenCode** | `~/.config/opencode/AGENTS.md` | — | `~/.config/opencode/agent/`, `~/.config/opencode/skills/` | `~/.local/share/opencode/storage/` and its session database; `~/.local/state/opencode/prompt-history.jsonl` |
+| **pi** | — | — | `~/.pi/agent/skills/` | `~/.pi/agent/sessions/` |
+| **Codex** | `~/.codex/AGENTS.md` | — | — | `~/.codex/sessions/` |
+| **Gemini CLI** | `~/.gemini/GEMINI.md` | the "Gemini Added Memories" section of `~/.gemini/GEMINI.md` | — | — |
+
+In a repository, the same tools keep tracked agent definitions and memory under
+directories such as `.claude/agents/`, `.claude/agent-memory/` and `.opencode/`.
+
+**Never read** these tools' credential stores, e.g. `~/.pi/agent/auth.json`, or
+token and key files under any of these directories.
+
+**Workspace managers** that run several agents side by side, such as herdr, keep
+no memories. They do show which agents run in which projects (for herdr:
+`herdr agent`, `herdr workspace`).
+
+**Unknown tools:** look in `~/.<tool>`, `~/.config/<tool>`, `~/.local/share/<tool>`
+and `~/.local/state/<tool>` for instruction, memory, agent, skill and session
+files. When you confirm a new location, add a row here.
 
 ## CI-side agents (optional)
 
