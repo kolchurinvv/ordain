@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Vendor the ord-ai-n agent kit into a repository, or verify a vendored copy.
 #
-#   ai/sync.sh <repo>          Copy this kit's ai/ into <repo>/ai/, record what was copied in
+#   ai/sync.sh [--force] <repo>
+#                              Copy this kit's ai/ into <repo>/ai/, record what was copied in
 #                              <repo>/ai/.kit-manifest, and regenerate the core block in
 #                              <repo>/AGENTS.md from ai/CORE.md.
+#                              Run it from an ord-ai-n checkout. It refuses to overwrite what
+#                              it didn't write (an ai/ with no manifest, uncommitted edits
+#                              under ai/) unless --force is given.
 #   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest
 #                              or <repo>/AGENTS.md's core block differs from ai/CORE.md.
 #                              Cheap enough for CI: the drift guard that holds whichever
 #                              agent or model made the change.
+#                              This is the only mode a vendored copy runs.
 #
 # The core block is everything between these two lines of AGENTS.md:
 #
@@ -26,16 +31,22 @@ END='<!-- ord-ai-n:core:end -->'
 MANIFEST=ai/.kit-manifest
 
 die() { echo "sync: $*" >&2; exit 1; }
-usage() { echo "usage: ai/sync.sh [--check] <repo>" >&2; exit 2; }
+usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 # The file paths a manifest lists, one per line.
 listed() { grep -v '^#' "$1" | sed 's/^[0-9a-f]*  //' || true; }
 
 check=0
-case "${1:-}" in
-  --check) check=1; shift ;;
-  -h|--help|"") usage ;;
-esac
+force=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --check) check=1 ;;
+    --force) force=1 ;;
+    -*) usage ;;
+    *) break ;;
+  esac
+  shift
+done
 [ $# -eq 1 ] || usage
 
 kit_ai=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
@@ -86,12 +97,22 @@ if [ "$check" = 1 ]; then
   exit "$status"
 fi
 
-# What to copy, and from which kit version. A vendored copy re-syncs from its own manifest;
-# a kit checkout ships its tracked files.
-if [ -f "$kit_root/$MANIFEST" ]; then
-  files=$(listed "$kit_root/$MANIFEST")
-  version=$(sed -n 's/^# source: ord-ai-n //p' "$kit_root/$MANIFEST")
-elif git -C "$kit_root" rev-parse --git-dir >/dev/null 2>&1; then
+# Refuse to overwrite what this script didn't write. A vendored copy (it has a manifest) only
+# checks: syncing from it would copy a stale kit over the target, and dropping a manifest into
+# a kit checkout would freeze its file list.
+[ ! -f "$kit_root/$MANIFEST" ] ||
+  die "$kit_ai is a vendored copy; it only runs --check. Sync from an ord-ai-n checkout."
+if [ "$target" != "$kit_root" ] && [ "$force" = 0 ]; then
+  [ ! -d "$target/ai" ] || [ -f "$target/$MANIFEST" ] ||
+    die "$target/ai exists but sync.sh didn't write it, and syncing would overwrite it. Move it, or pass --force."
+  if [ -d "$target/ai" ] && git -C "$target" rev-parse --git-dir >/dev/null 2>&1 &&
+     [ -n "$(git -C "$target" status --porcelain -- ai)" ]; then
+    die "$target/ai has uncommitted changes that syncing would overwrite. Commit or drop them, or pass --force."
+  fi
+fi
+
+# What to copy, and from which kit version: the kit checkout's files.
+if git -C "$kit_root" rev-parse --git-dir >/dev/null 2>&1; then
   # Tracked plus not-yet-added files: what the kit's next commit would ship.
   files=$(cd "$kit_root" && git ls-files --cached --others --exclude-standard ai |
           while IFS= read -r f; do if [ -f "$f" ]; then echo "$f"; fi; done | sort -u)
