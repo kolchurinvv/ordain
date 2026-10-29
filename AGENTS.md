@@ -2,9 +2,10 @@
 
 Provider-neutral operating contract for AI coding agents in this repository.
 `AGENTS.md` is the emerging cross-tool standard filename (Cursor, Codex, Aider,
-Zed, and others read it). Provider-specific entrypoints (`CLAUDE.md`,
-`GEMINI.md`, `.github/copilot-instructions.md`) should **point here**, not fork
-it — see `ai/providers.md`.
+Zed, Copilot's coding agent, and Claude Code when no `CLAUDE.md` exists read
+it). Provider-specific entrypoints (`CLAUDE.md`, `GEMINI.md`,
+`.github/copilot-instructions.md`) should **import or point here**, not fork it —
+see `ai/providers.md`.
 
 This repository is `ord-ai-n`, the home of the kit itself: the contract below is
 the product, and this file carries it the same way any adopting repository does.

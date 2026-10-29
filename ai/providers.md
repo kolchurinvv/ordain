@@ -9,49 +9,43 @@ point each provider at it.
 
 | Provider / tool | Entrypoint it auto-reads | Sub-agent dir | Settings/permissions |
 |---|---|---|---|
-| **Claude Code** | `CLAUDE.md` | `.claude/agents/*.md` | `.claude/settings.json` (shared, tracked), `.claude/settings.local.json` (local; track it if you want grants shared) |
+| **Claude Code** | `CLAUDE.md`; `AGENTS.md` only when no `CLAUDE.md` exists (v2.1.277+, not every backend) | `.claude/agents/*.md` | `.claude/settings.json` (shared, tracked), `.claude/settings.local.json` (local; track it if you want grants shared) |
 | **Cursor** | `AGENTS.md` (also `.cursor/rules/*.mdc`) | — | `.cursor/rules/` |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | — | — |
-| **Gemini CLI** | `GEMINI.md` | — | — |
+| **GitHub Copilot** | coding agent: `AGENTS.md`; IDE chat: `.github/copilot-instructions.md` | — | — |
+| **Gemini CLI** | `GEMINI.md` (other names via its `context.fileName` setting) | — | — |
 | **OpenAI Codex / Aider / Zed / others** | `AGENTS.md` | varies | varies |
 
-## Install: copy the kit, then wire the entrypoints
+## Wire the entrypoints
 
-1. Copy `AGENTS.md` and the `ai/` directory into the target repo's root.
-2. Make each provider's entrypoint point at `AGENTS.md` instead of duplicating
-   it. Two ways:
+Copying the kit and writing the Bindings is `ai/README.md` § Adopt. What's left
+per tool is making its entrypoint load `AGENTS.md` instead of duplicating it:
 
-   **Symlink (preferred — zero drift):**
-   ```sh
-   ln -s AGENTS.md CLAUDE.md
-   ln -s AGENTS.md GEMINI.md
-   mkdir -p .github && ln -s ../AGENTS.md .github/copilot-instructions.md
-   ```
-   Cursor reads `AGENTS.md` natively, so no symlink needed there.
+- **Claude Code — import, `@AGENTS.md`.** A `CLAUDE.md` whose first line is
+  `@AGENTS.md` inlines it at session start on every Claude Code version and
+  backend. Without one, only recent versions read `AGENTS.md`, and only while no
+  `CLAUDE.md` exists anywhere from the working directory up, so the first
+  `CLAUDE.md` anyone adds silently switches `AGENTS.md` off. Not a symlink:
+  Claude's own edit tools refuse to write through it, and Windows clones break it.
+  Not a stub that says "See AGENTS.md": Claude sees the content only if it
+  decides to open the file.
+- **Copilot IDE chat:** `mkdir -p .github && ln -s ../AGENTS.md
+  .github/copilot-instructions.md` (it has no import syntax). Its coding agent
+  reads `AGENTS.md` itself.
+- **Gemini CLI:** point its `context.fileName` setting at `AGENTS.md`, or
+  `ln -s AGENTS.md GEMINI.md`.
+- **Cursor, Codex, Zed, and most others** read `AGENTS.md` natively.
 
-   **Stub (if symlinks are awkward on the team's platform):** a one-line file
-   whose whole content is `See AGENTS.md` (plus, for `CLAUDE.md`, any genuinely
-   Claude-Code-specific notes — see below).
-
-3. Bind the repo-specific placeholders once (at minimum `<gate-command>`,
-   `<base>` branch, and the memory root). Put these in the provider entrypoint
-   or a short top-of-repo section; the `ai/*` modules stay generic.
-
-4. Install the pre-commit hook: `cp ai/templates/pre-commit .githooks/pre-commit
-   && chmod +x .githooks/pre-commit` then a `hook-install` recipe that runs
-   `git config core.hooksPath .githooks`.
-
-5. **Commit the lot.** Agent definitions and memory must be tracked
-   (`ai/05-agent-authoring.md`).
+Add an entrypoint only for a tool somebody actually uses on the repository.
+Every extra entrypoint is a file somebody has to recognise as generated.
 
 ## Per-provider specifics
 
 ### Claude Code
-- A real `CLAUDE.md` (not a symlink) is worth keeping when you have
-  Claude-Code-specific operating notes: scratchpad goes in repo-local `.tmp/`
-  not `/tmp`; CI watching runs under the Monitor tool; skills/plan-mode/task
-  conventions. Have it open with `See AGENTS.md for the universal contract`,
-  then add only the deltas.
+- `CLAUDE.md` opens with `@AGENTS.md`, then adds only Claude-Code-specific
+  deltas: scratchpad goes in repo-local `.tmp/` not `/tmp`; CI watching runs
+  under the Monitor tool; skills/plan-mode/task conventions. A repo-local skill
+  that implements a module (e.g. an adversarial-review skill for `ai/08`) is
+  named in Bindings, so agents in other tools know it exists.
 - **Permissions** are the autonomy lever. `ai/templates/claude.settings.json`
   shows a yolo-but-guarded profile: broad `allow`, with a `deny` list that
   protects baselines and forbids writes to sibling repos. Autonomy is granted
@@ -69,7 +63,8 @@ point each provider at it.
 ### Copilot
 - `.github/copilot-instructions.md` is a single file with no include mechanism;
   symlink it to `AGENTS.md`. Copilot won't traverse `ai/*` on its own, so the
-  entrypoint's inline core (the non-negotiables) is what it reliably honors.
+  inline core block (the non-negotiables) is what it reliably honors. This is why
+  the core is generated into `AGENTS.md` rather than linked from it.
 
 ### Generic / unknown tool
 - If it reads `AGENTS.md`, it gets the contract and can follow the pointers into
