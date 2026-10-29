@@ -33,6 +33,13 @@ anything else. Do not "fix forward" silently — a pre-existing failure is the
 user's to know about, and silently absorbing it into your change destroys the
 signal of what *you* broke.
 
+If your environment **cannot run the gate** — no container runtime, no network,
+a sandbox missing the toolchain — say so before you start and again in your
+report. You may still do the work, but it is unverified, and it must be
+presented as unverified: never let "I couldn't run it" read as "it passed." In
+a repository whose agents run in harnesses nobody controls, this is the case
+you will meet most often.
+
 ## 3. Never delete generated baselines
 
 Golden snapshots, recorded fixtures, approval-test outputs, committed codegen,

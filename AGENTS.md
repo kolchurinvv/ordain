@@ -45,7 +45,9 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    the tree buildable — never one large end-of-session dump.
 2. **Start from a known-good state.** Run the gate (`<gate-command>`, see
    `ai/01`) before changing anything. If it's red at session start, surface that
-   to the user *before* touching code — never fix-forward silently.
+   to the user *before* touching code — never fix-forward silently. If your
+   environment cannot run it, say so up front and in your report — never present
+   unverified work as verified.
 3. **Generated baselines are append-only.** Golden snapshots, fixtures,
    recorded outputs, lockfiles-of-record: never `rm`, never overwrite, never
    fold into a "cleanup" pass. Regenerate only on explicit user approval,
