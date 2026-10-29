@@ -121,9 +121,10 @@ Cheap, mechanical, and where the worst findings hide. Do it first.
 
 - **Diff every file that defines what the gates check** — coverage thresholds,
   lint configuration, type-checker strictness, the gate implementations
-  themselves, exemption registries, ignore files. These are frequently *outside*
-  whatever guard protects the CI definition, and loosening one is how a change
-  goes green without being right.
+  themselves, exemption registries, ignore files — and the repo's Bindings and
+  decision records, which outrank the kit's rules, so one added row can relax
+  any of them. These are frequently *outside* whatever guard protects the CI
+  definition, and loosening one is how a change goes green without being right.
 - **Grep the diff for local escapes** — lint-disable comments, type-checker
   suppressions, `any`-casts and widened types, and tests neutralised via
   skip/todo/only or a quietly deleted assertion. Grep for these; do not rely on
