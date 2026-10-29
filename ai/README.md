@@ -16,6 +16,7 @@ Gemini, Codex, …).
 | `CORE.md` | The non-negotiable core and module index: the block `sync.sh` generates into every adopting repo's `AGENTS.md`. |
 | `sync.sh` | Vendors the kit into a repo (`sync.sh <repo>`); verifies a vendored copy (`sync.sh --check <repo>`). |
 | `../install.sh` | The `curl \| bash` entry point: downloads the kit at one commit and runs its `sync.sh` on the current repo. |
+| `INSTALL.md` | Step by step: install into an existing repo (branch first), write the Bindings, update, remove, send lessons back. |
 | `00-execution-policy.md` | How agents operate: incremental commits, known-good start, append-only baselines, ratchet-only gates, conditional autonomy. |
 | `01-commit-and-pr-hygiene.md` | The gate, commit messages (host convention first), branching/worktrees, PRs, milestone tags. |
 | `02-ci-discipline.md` | Watch every push to green; use the poll recipe; artifact triage. |
@@ -52,62 +53,22 @@ takes hold in three layers, from weakest guarantee to strongest:
    change, including an agent that read nothing. A rule that matters and that a
    script can check should be checked by one.
 
-### Steps
+### How
 
-1. **Mark where the block goes.** In the host's `AGENTS.md` (create one with a
-   title if it has none), add these two lines near the top, after the project
-   summary. The sync never guesses a placement.
-   ```
-   <!-- ord-ai-n:core:begin -->
-   <!-- ord-ai-n:core:end -->
-   ```
-2. **Install.** From the host repo's root:
-   ```sh
-   curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
-   ```
-   It downloads the kit at one exact commit and runs that version's
-   `ai/sync.sh`. That copies `ai/`, records the source commit and each file's
-   hash in `ai/.kit-manifest`, and regenerates the block from `ai/CORE.md`. Pin
-   a version with `bash -s -- --ref <tag-or-sha>`. While the kit repo is
-   private, add `-H "Authorization: Bearer $(gh auth token)"` to the `curl`; the
-   installer authenticates its own downloads the same way. When developing the
-   kit itself, run `ai/sync.sh <host-repo>` from your checkout instead.
-3. **Write the host's Bindings.** Directly after the block, add a `## Bindings`
-   section that binds each placeholder to this repository: the gate command and
-   what to do where it cannot run, the base branch, the commit and branch
-   convention, the decision records, the status docs, the generated baselines,
-   how to watch CI, the memory root, where agent definitions live, the
-   autonomy granted, and `Feedback (star-pupil)`: whether the kit's harvesting
-   agent may run here and what it may read (off when absent; see
-   `agents/star-pupil.md`). An entry with no value says so ("none: …"); never
-   leave one silently unbound.
-4. **Reconcile, don't stack.** Where the host already has rules (a constitution,
-   a commit convention, its own review skill), the host's documents win over the
-   kit's defaults. Record that in Bindings, and point the host's existing tools
-   at the matching module instead of adding a parallel one.
-5. **Wire the entrypoints** for tools that don't read `AGENTS.md` themselves
-   (`providers.md`). For Claude Code, that is a `CLAUDE.md` that starts with
-   `@AGENTS.md`. Optionally, drop the specialists you want into the host's agent
-   dir (e.g. `cp ai/agents/*.md .claude/agents/`, delegation policy in
-   `07-agent-roster.md`), and set the autonomy level from
-   `templates/claude.settings.json`.
-6. **Enforce what can be enforced.** At minimum, run `ai/sync.sh --check .` in CI
-   so neither the block nor `ai/` can be edited in place. Then add a gate and a
-   hook (`templates/gate.just`, `templates/pre-commit`) and CI checks for the
-   host's own load-bearing rules.
-7. **Commit all of it.** Agent definitions and memory must be tracked
-   (`05-agent-authoring.md`).
+Step by step, including branching first, a Bindings skeleton, updating and
+removing: `INSTALL.md`. Two rules shape every step:
+
+- **Reconcile, don't stack.** Where the host already has rules (a constitution,
+  a commit convention, its own review skill), the host's documents win over the
+  kit's defaults. Bindings say so, and the host's existing tools point at the
+  matching module instead of a parallel one.
+- **Never edit the kit in place.** Every update overwrites `ai/` and the block,
+  and `sync.sh --check` fails on in-place edits. Repo-specific values go in
+  Bindings; changes to the kit itself go to ord-ai-n.
 
 The kit must live at `ai/` in the host, because its modules cite each other by
-that path.
-
-### Update
-
-Re-run the install line in the host and commit the result on its own; its diff
-is exactly the kit's change. Never edit `ai/` or the block in the host: change
-them in ord-ai-n, then update. `--check` fails on in-place edits and on files
-under `ai/` that the kit does not ship. Sync refuses to overwrite an `ai/` it
-didn't write or one with uncommitted changes, unless given `--force`.
+that path. When developing the kit itself, run `ai/sync.sh <host-repo>` from a
+checkout instead of the installer.
 
 ## Design stance
 

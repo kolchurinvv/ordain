@@ -141,7 +141,7 @@ if [ "$target" != "$kit_root" ]; then
   done <<<"$files"
   {
     echo "# ord-ai-n agent kit, vendored by ai/sync.sh. Do not edit the files listed here:"
-    echo "# change them in ord-ai-n and re-run its installer (ai/README.md). Verify: ai/sync.sh --check ."
+    echo "# change them in ord-ai-n and re-run its installer (ai/INSTALL.md). Verify: ai/sync.sh --check ."
     echo "# source: $version"
     (cd "$target" && while IFS= read -r f; do sha "$f"; done <<<"$files")
   } >"$target/$MANIFEST"
