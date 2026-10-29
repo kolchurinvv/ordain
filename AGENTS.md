@@ -117,3 +117,4 @@ rather than staying silent.
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
+| `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |

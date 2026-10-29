@@ -26,7 +26,7 @@ Gemini, Codex, …).
 | `07-agent-roster.md` | The standing roster of specialists and the delegation policy. |
 | `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings. |
 | `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
-| `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer. |
+| `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer, star-pupil. |
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |
 | `templates/agent-template.md` | Provider-neutral sub-agent definition skeleton. |
@@ -76,9 +76,11 @@ takes hold in three layers, from weakest guarantee to strongest:
    section that binds each placeholder to this repository: the gate command and
    what to do where it cannot run, the base branch, the commit and branch
    convention, the decision records, the status docs, the generated baselines,
-   how to watch CI, the memory root, where agent definitions live, and the
-   autonomy granted. An entry with no value says so ("none: …"); never leave one
-   silently unbound.
+   how to watch CI, the memory root, where agent definitions live, the
+   autonomy granted, and `Feedback (star-pupil)`: whether the kit's harvesting
+   agent may run here and what it may read (off when absent; see
+   `agents/star-pupil.md`). An entry with no value says so ("none: …"); never
+   leave one silently unbound.
 4. **Reconcile, don't stack.** Where the host already has rules (a constitution,
    a commit convention, its own review skill), the host's documents win over the
    kit's defaults. Record that in Bindings, and point the host's existing tools
