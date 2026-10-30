@@ -127,6 +127,12 @@ value, a blank is not.
 constitution, a CONTRIBUTING file, a commit convention, its own review skill),
 point at them in Bindings and say which document wins. Don't copy them in.
 
+**Describe what is, gaps included.** Find each value in the repository itself
+(its scripts, CI, tests, docs) rather than guessing. Where the repository
+doesn't meet a rule yet, the row says so: for example, "no test reads a stored
+record back yet; start from <the test database helper>". Fixing the gap is
+separate work, not part of adopting.
+
 ### 5. Wire the tools that don't read `AGENTS.md`
 
 Most coding agents read `AGENTS.md` by themselves. Some read their own file
@@ -146,7 +152,29 @@ git commit        # the repository's message format; name the source line from a
 row in your Bindings, and it names the missing ones. After an update that adds
 a placeholder, that tells you which row to write.
 
-Open the pull request the way the repository usually does.
+Before opening the pull request:
+
+- **Run the repository's gate** (its `<gate-command>` binding), the way the
+  repository requires before a PR. Check that shared resources such as a test
+  database are free first. Never copy another checkout's secrets file to make
+  the gate run (`ai/01` § The gate). If you can't run it, say so in the PR
+  instead of implying it passed.
+- **Check overlap with other open PRs** that touch `AGENTS.md` by merging your
+  branch with theirs, not the base with theirs (`ai/01` § Pull requests).
+- **One concern per PR.** Adopting means adding `ai/`, the block, the Bindings
+  and the entrypoint wiring. Pointing one of the repository's existing tools at
+  the kit is a change to something its maintainers already run, such as wiring
+  a review skill to `ai/08`. That goes in its own PR, which says what the tool
+  will start doing or flagging. If that PR is stacked on the adoption PR, see
+  `ai/01` § Stacked pull requests: it may get no CI until it is retargeted.
+
+Open the pull request the way the repository usually does. Its body says:
+
+- what the contract is;
+- what the Bindings map, and which of the repository's own documents win;
+- how the gate went;
+- that your files merge cleanly with the other open PRs;
+- how to update the kit (§ Update).
 
 Then, as a separate change, make CI fail when someone edits the kit in place.
 Do this once the kit repository is public, so whoever maintains the repository
