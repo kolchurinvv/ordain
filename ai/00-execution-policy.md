@@ -54,6 +54,13 @@ approval in the commit message (e.g. `chore(goldens): regenerate onboarding
 snapshots (user-approved)`). The baseline is the test oracle; silently rewriting
 it is silently deleting the test.
 
+**Admit a new baseline only when it is stable.** Capture it in two independent
+runs and admit only what both agree on. A screenshot that differs between two
+runs of the same commit is noise, and admitting it makes the gate flaky.
+Tooling that writes baselines dry-runs by default, and archives the old version
+before replacing it. A missing baseline makes a comparison pass by comparing
+nothing. That is a gap to fill, not a pass (`ai/11` rule 8).
+
 ## 4. Quality gates ratchet upward only
 
 Coverage floors, lint thresholds, type strictness, and check counts may be
