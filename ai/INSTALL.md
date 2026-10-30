@@ -194,6 +194,24 @@ can see where a fix belongs. GitHub Actions:
       - run: ai/sync.sh --check .
 ```
 
+### 7. Turn every gap into an issue
+
+A Bindings row that says `none`, or states a gap, is work the repository
+doesn't have yet. Open one issue for each, in the repository's own terms,
+so the gaps get closed rather than just recorded. Typical ones:
+
+- no single gate command, or none run before commits (`templates/gate.just`,
+  `templates/pre-commit`);
+- lint warnings that don't fail, a type checker below its strictest mode, no
+  formatting check (`ai/12`);
+- no coverage floors, or one global floor and nothing per area (`ai/11`);
+- inline escape hatches instead of an exemption registry (`ai/11`);
+- tests that don't read persisted data back from the real store (`ai/10`);
+- no umbrella check, or merges that don't require a green head (`ai/02`).
+
+Each issue goes through the repository's normal process, like any other change.
+Don't fold them into the adoption PR.
+
 ## Adopting with an agent
 
 To have an agent do the adoption, paste this into whichever agent works in the
@@ -219,6 +237,7 @@ Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how A
    - Never edit ai/ or the generated block by hand; only the installer writes them.
    - Before the pull request, run the repository's gate the way it requires. Don't copy anyone's secrets to make it run, and don't take a shared resource (a test database, a container) that another checkout is using. If you can't run it, say so.
    - One concern per pull request. Changes to tools the maintainers already run go in a separate pull request.
+   - After the pull request is open, list every gap the Bindings state and offer to open one issue per gap (ai/INSTALL.md step 7). Open them only when I agree.
 
 5. Commit as you go, one concern per commit, in the repository's format. Show me the branch, the commits and the pull request text. Push and open it only when I say so. Then watch its CI to a green conclusion on the pull request's head commit, job by job, and report.
 
