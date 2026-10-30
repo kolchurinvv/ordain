@@ -8,8 +8,10 @@
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
 #                              under ai/) unless --force is given.
-#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest
-#                              or <repo>/AGENTS.md's core block differs from ai/CORE.md.
+#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest,
+#                              <repo>/AGENTS.md's core block differs from ai/CORE.md, or a
+#                              placeholder in the Bindings skeleton (ai/INSTALL.md) has no
+#                              row in AGENTS.md's Bindings.
 #                              Cheap enough for CI: the drift guard that holds whichever
 #                              agent or model made the change.
 #                              This is the only mode a vendored copy runs.
@@ -35,6 +37,20 @@ usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 # The file paths a manifest lists, one per line.
 listed() { grep -v '^#' "$1" | sed 's/^[0-9a-f]*  //' || true; }
+# Placeholders the Bindings skeleton in ai/INSTALL.md asks every repository to bind.
+skeleton_placeholders() {
+  [ -f "$1" ] || return 0
+  # shellcheck disable=SC2016  # the backticks are literal Markdown, not expansions
+  awk '/^## Bindings$/{s=1; next} s && /^```/{exit} s' "$1" |
+    grep -o '^| `<[a-z0-9-]*>`' | sed 's/^| `//; s/`$//' | sort -u || true
+}
+# Of those, the ones AGENTS.md never mentions after the core block, i.e. in its Bindings.
+unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
+  skeleton_placeholders "$2" | while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    tail -n "+$(($3 + 1))" "$1" | grep -qF "\`$p\`" || echo "$p"
+  done
+}
 
 check=0
 force=0
@@ -72,6 +88,12 @@ if [ "$check" = 1 ]; then
     echo "sync: AGENTS.md's core block was edited in place. Put repo-specific values in Bindings;" >&2
     echo "      change the core in ord-ai-n and re-sync. Difference:" >&2
     echo "$block_diff" >&2
+    status=1
+  fi
+  missing=$(unbound AGENTS.md ai/INSTALL.md "$end_line")
+  if [ -n "$missing" ]; then
+    echo "sync: AGENTS.md's Bindings have no row for (see ai/INSTALL.md step 4):" >&2
+    echo "$missing" | sed 's/^/  /' >&2
     status=1
   fi
   # The kit's own checkout has no manifest; a vendored copy always does.
@@ -158,6 +180,12 @@ trap 'rm -f "$tmp"' EXIT
 cat "$tmp" >"$agents"
 
 echo "sync: $target now carries $version"
+end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
+missing=$(unbound "$agents" "$target/ai/INSTALL.md" "$end_line")
+if [ -n "$missing" ]; then
+  echo "sync: add Bindings rows for these, or --check fails (ai/INSTALL.md step 4):" >&2
+  echo "$missing" | sed 's/^/  /' >&2
+fi
 case "$version" in
   *-dirty) echo "sync: the kit has uncommitted changes; commit them and re-sync before committing $target" >&2 ;;
 esac

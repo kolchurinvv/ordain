@@ -142,6 +142,10 @@ git add ai AGENTS.md   # plus any entrypoint files from step 5
 git commit        # the repository's message format; name the source line from ai/.kit-manifest
 ```
 
+`--check` also fails while a placeholder from the skeleton in step 4 has no
+row in your Bindings, and it names the missing ones. After an update that adds
+a placeholder, that tells you which row to write.
+
 Open the pull request the way the repository usually does.
 
 Then, as a separate change, make CI fail when someone edits the kit in place.
