@@ -35,6 +35,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `templates/agent-template.md` | Provider-neutral sub-agent definition skeleton. |
 | `templates/claude.settings.json` | Adapter for one tool: an example yolo-but-guarded permissions profile. |
 | `templates/gate.just` | The `check` / `precommit` / `hook-install` / `ci-watch` recipe contract. |
+| `templates/decision-record.md` | A decision record: context, decision, consequences, and the check that enforces it. |
 
 ## Adopt it in a repository
 

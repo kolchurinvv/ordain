@@ -9,7 +9,7 @@ every session.
 
 | Kind of knowledge | Home |
 |---|---|
-| A **decision** (stack choice, architectural invariant, "we use X not Y") | A decision record: `docs/decisions/*`, ADRs, a dated `stack-decisions.md`. Dated, append-mostly, supersession noted. |
+| A **decision** (stack choice, architectural invariant, "we use X not Y") | A decision record: `docs/decisions/*`, ADRs, a dated `stack-decisions.md`. Dated, append-mostly, supersession noted. Template: `ai/templates/decision-record.md`; its Enforcement section names what holds the decision. |
 | A **procedure** (how to run/deploy/regenerate something) | A runbook: `docs/runbooks/*`. |
 | **History / why a change was made** | The commit message. Not a doc, not the entrypoint. |
 | **In-flight task state** | A task list / plan in the current session — not a file. |
