@@ -69,3 +69,22 @@ relies on is exercised end to end.
   without an entry.
 - **Fail on a behavior that has neither a test nor an exemption** in the
   registry (`ai/11` rules 4 and 8).
+
+## 5. Test first, by layer
+
+How strictly the test comes first depends on what is changing:
+
+- **Pure logic and validation** (code without I/O: parsers, validators, domain
+  rules): strictly test first. Write the test, run it, and watch it fail for
+  the reason you expect. Only then write the code. A test you never saw fail
+  may be testing nothing.
+- **Interfaces between parts** (HTTP handlers, message consumers, public module
+  APIs): the contract test comes first, input in and response plus stored state
+  out (rule 1). Then the implementation.
+- **UI, end-to-end flows and native integrations:** tests may follow the code,
+  but in the same change, never "later".
+- **Every bug fix starts with a failing test** that reproduces it, at the lowest
+  layer that can show it. The fix makes it pass, and the test stays.
+
+Whatever the layer, a change isn't done until its tests are in the same commit
+series.

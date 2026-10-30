@@ -31,6 +31,12 @@ single source of truth for "what passes." See `ai/templates/pre-commit`.
 to the aggregate in the *same* commit series — otherwise the gate silently skips
 it and the coverage is a lie.
 
+**Before every hand-back, run at least the fast tier on the final head.** Run
+it on the commit you are about to report, not one from earlier in the session:
+format, lint, typecheck and the unit tests, even when the full gate is slow.
+"Run the full suite" means the strict tier (`precommit`), not the unit tests
+alone.
+
 **Run it without borrowing secrets.** When the gate needs configuration
 (database credentials, API keys), give it throwaway values in the environment,
 or a test-only file the repository provides. Never copy another checkout's or
