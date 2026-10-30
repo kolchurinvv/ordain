@@ -95,6 +95,19 @@ gh pr create --base <base> --title "..." --body "..."
   the card.
 - End the PR body with whatever attribution footer the repo standardizes on.
 
+**Check overlap with other open PRs by merging your branch, not the base.** When
+your change touches files that other open PRs also touch, merge your branch with
+each of theirs and look only at your own files:
+
+```
+git merge-tree --write-tree --name-only <your-branch> origin/<their-branch>
+```
+
+Merging the base with their branch tells you nothing about yours. It also
+reports conflicts they already have with the base, which you didn't cause. Say
+both in the PR body: your files merge cleanly, and any pre-existing conflicts
+belong to the other PRs.
+
 **Enforce issue-first with a gate, not a convention.** A CI job that fails any PR
 whose body carries no issue reference is worth its weight: it makes every change
 traceable to the request that motivated it. That link is not bookkeeping — it is
