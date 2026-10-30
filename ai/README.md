@@ -18,7 +18,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `INSTALL.md` | Step by step: install into an existing repo (branch first), write the Bindings, update, remove, send lessons back; or a prompt that hands the adoption to an agent. |
 | `00-execution-policy.md` | How agents operate: incremental commits, known-good start, append-only baselines, ratchet-only gates, conditional autonomy. |
 | `01-commit-and-pr-hygiene.md` | The gate, commit messages (host convention first), branching/worktrees, PRs, milestone tags. |
-| `02-ci-discipline.md` | Watch every push to green; use the poll recipe; artifact triage. |
+| `02-ci-discipline.md` | Watch every push to green; one umbrella check; merge only on a green, pinned head; use the poll recipe; artifact triage. |
 | `03-defensive-coding.md` | Fail soft on the world: the six boundaries. Fail loud on yourself: no swallowed errors, no defaults for impossible absences, exhaustive handling. |
 | `04-memory-framework.md` | File-based cross-session memory; stale memory is worse than none. |
 | `05-agent-authoring.md` | Writing sub-agents; keeping definitions + memory in git. |

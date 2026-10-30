@@ -26,6 +26,33 @@ The full enumeration of ways a pipeline goes green without proving anything —
 and what to check for each — is in `ai/08-adversarial-review.md` (rule 2). It is
 written for reviewing someone else's change; apply the same list to your own.
 
+## One umbrella check
+
+A repository with more than a couple of CI jobs gets one required check that
+aggregates them, an "all gates green" job:
+
+- **It depends on every gate job.** Adding a gate means adding it here in the
+  same change, just as a new test surface joins the local aggregate (`ai/01`).
+- **It passes only if every dependency succeeded.** Cancelled is failure.
+  Skipped passes only for jobs on an explicit allow-list per event (say, a
+  mobile build on a docs-only change). Any other skip is failure.
+- **Tests pin its wiring:** the job's name, its dependency list, and the absence
+  of `continue-on-error` or `|| true` on gate steps. A refactor of the workflow
+  then can't quietly drop a gate (`ai/11` rule 9).
+
+## The merge gate
+
+- **Merge only on a green head.** The umbrella must have succeeded on the PR's
+  *current* head commit. Check the run's head SHA, not the badge (§ Terminal ≠
+  proven).
+- **Pin that head in the merge command,** so a push that lands in between can't
+  merge unchecked (for example `gh pr merge --match-head-commit <sha>`).
+- **Where the platform enforces branch protection,** require the umbrella there.
+- **Where it doesn't** (some plans don't), enforce the rule twice:
+  - a guard on the agent's merge command, where its tools allow one;
+  - an audit after every push to the default branch that flags a direct push, a
+    merge without a green head, or a force push, and opens an issue for each.
+
 ## Use the project's poll recipe — do not hand-roll a loop
 
 If the repo provides a CI-watch recipe (e.g. `just ci-watch`, a
