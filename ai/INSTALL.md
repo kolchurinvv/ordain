@@ -112,6 +112,7 @@ value, a blank is not.
 | Decision records | Where architecture and stack decisions are written down. |
 | Status docs (rule 5) | The README or roadmap that must stay current. |
 | Generated baselines (rule 3) | Snapshots, fixtures, migrations, lockfiles: files agents must never rewrite unasked. |
+| `<read-back>` (`ai/10`) | How tests read a stored record back from the real store: the database or store, the helper or test handle, how test data is isolated. `none: <why>` if nothing persists. |
 | Quality gates (rule 4) | The checks that may only get stricter. |
 | CI (rule 6) | What runs on which event, and how to watch it. |
 | Adversarial review (core 10) | How independent review is run here. |

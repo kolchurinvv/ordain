@@ -23,6 +23,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Deciding which specialist to delegate to | `ai/07-agent-roster.md` (+ `ai/agents/*.md`) |
 | Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
+| Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
 
 ### Non-negotiable core
 

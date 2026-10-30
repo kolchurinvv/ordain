@@ -35,6 +35,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Deciding which specialist to delegate to | `ai/07-agent-roster.md` (+ `ai/agents/*.md`) |
 | Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
+| Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
 
 ### Non-negotiable core
 
@@ -113,6 +114,7 @@ rather than staying silent.
 | Decision records | None yet; decisions come from the user. |
 | Status doc (rule 5) | None yet (no root `README.md`); `ai/README.md` describes the kit. |
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
+| `<read-back>` (`ai/10`) | none: the kit stores nothing and has no tests yet. |
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |

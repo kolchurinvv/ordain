@@ -26,6 +26,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `07-agent-roster.md` | The standing roster of specialists and the delegation policy. |
 | `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings. |
 | `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
+| `10-test-discipline.md` | What tests must prove: persistence verified by reading it back from the real store; tests that can fail. |
 | `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer, star-pupil. |
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |

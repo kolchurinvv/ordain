@@ -159,6 +159,9 @@ That is not the same as the test having value.
 - **Check the assertion is real** — that it pins the invariant, not a value
   copied from the current output. Assert derived values against their source,
   never against a hardcoded snapshot of what the code happens to emit today.
+- **Check that a persisting interaction is verified by a read-back** from the
+  real store (`ai/10` rule 1), not by the response, the UI or a mock. A test that
+  only checks what the caller saw passes while the write is lost.
 
 ## Rule 6 — falsify your own findings before reporting them
 
