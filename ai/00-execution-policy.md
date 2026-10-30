@@ -111,6 +111,20 @@ Autonomous mode never extends to:
 - **Irreversible outward actions** beyond normal commit/push — force-pushing
   shared branches, deleting remote branches/tags, publishing releases, touching
   production — unless the user durably authorized that specific action.
+- **Production and shared environments.** Never run a command against
+  production. Writes to a shared environment (staging, QA, a shared database)
+  need the user's approval for that action.
+- **Revealing secrets.** Never print, echo, log or dump a secret's value. That
+  covers environment dumps, tracing modes that echo commands, and reading a
+  secret store to the terminal. Use secrets by reference only.
+
+**A denied action is a stop.** When a guard, a permission rule or the user
+denies an action, stop and report it. Never rephrase the command, split it, or
+route it through another tool to get the same effect. Some guards accept an
+approval marker, such as an environment prefix or a flag. That marker records
+that the user approved this specific action; it is not a way for an agent to
+authorize itself. Where your tools can guard tool calls, use that for the limits
+above (`ai/providers.md` § Enforcing rules at tool-call time).
 
 Autonomy is about removing tedium (manual commit/push/test cycles), not about
 removing judgment on the few actions that are actually dangerous.

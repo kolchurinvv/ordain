@@ -72,6 +72,45 @@ Every extra entrypoint is a file somebody has to recognise as generated.
   `ai/*` on demand. If it reads nothing automatically, paste `AGENTS.md` into
   its system prompt / rules field.
 
+## Enforcing rules at tool-call time
+
+A rule enforced when a tool call is about to run holds earlier than any git
+hook or CI job: before anything is written, sent or merged. Use it where a tool
+supports it, for the limits in `ai/00` rule 8 and for the merge gate
+(`ai/02` § The merge gate).
+
+- **Claude Code:** `PreToolUse` hooks in `.claude/settings.json` (or a tracked
+  `.claude/settings.local.json`), typically on `Bash`. A hook script reads the
+  pending call and allows it or denies it with a reason.
+- **Other tools:** their equivalent if they have one. Otherwise git hooks and CI
+  carry the rule.
+
+Guards worth having:
+
+- **Production and secrets:**
+  - deny any command aimed at production;
+  - deny writes to a shared environment unless the command carries the user's
+    approval marker;
+  - deny printing a secret (environment dumps, command tracing, reading a
+    secret store to the terminal).
+- **Merging:** deny a merge unless the umbrella check succeeded on the PR's
+  current head, and the command pins that head.
+- **Machine capacity:** refuse heavy commands (the full gate, end-to-end runs)
+  while the machine is already saturated.
+
+How to write them:
+
+- **Parse the command properly.** Split on separators, look inside command
+  substitutions, and treat heredoc bodies as data unless they are executed. A
+  guard that only greps the first word is easy to walk around.
+- **Fail closed, on a deadline.** A guard that can't decide in time, or can't
+  parse the command, denies it. The capacity guard is the exception: it fails
+  open, because blocking all work when it errs costs more than it saves.
+- **Test every guard,** with fixtures that must be allowed and fixtures that
+  must be denied. The test runner fails if it finds no suites (`ai/11` rule 8).
+- **Track the guard and its wiring** in the repository (`ai/05`), so every
+  checkout gets them.
+
 ## Loading the kit's agents
 
 The definitions in `ai/agents/` carry only `name` and `description`, so any tool
