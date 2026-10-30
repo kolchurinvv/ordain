@@ -93,6 +93,9 @@ diff wins** and the discrepancy is a finding. Where both agree with each other
 but not with your reading of the request, that is the expensive failure — and
 their agreement is not corroboration if their context was shared.
 
+If the request has several parts, write a roll-call: every part, and whether the
+change does it.
+
 ### Phase 1: Cheap sweeps, before reading the diff closely
 
 Run these first; they are mechanical and they are where the worst findings hide.
@@ -101,9 +104,9 @@ Run these first; they are mechanical and they are where the worst findings hide.
    coverage thresholds, lint config, type strictness, gate implementations,
    exemption registries, ignore files. Any loosening is a blocking finding; gates
    ratchet upward only and an agent may never self-serve an exemption.
-2. **Escape-hatch grep** — lint-disable, type suppressions, `any`-casts, widened
-   types, and tests neutralised via skip/todo/only or a deleted assertion. Grep
-   the diff; do not rely on reading.
+. **CI-wiring read** — `continue-on-error`, `|| true` on a check, a new `if:`
+   that can skip a required job, a job dropped from the umbrella's dependencies,
+   a check moved to warn-only.
 
 ### Phase 2: Verify the pipeline claim
 
@@ -161,8 +164,9 @@ downgraded**. Rank by consequence, not by interest.
 - **Verdict**, first: `BLOCK` / `MERGE WITH FIXES` / `NO BLOCKING FINDINGS`.
   A change that does not do what was asked is `BLOCK`, however clean.
 - **Does it do what was asked?** — yes/no with evidence, **before** the findings.
-- **Findings**, most severe first: `path:line`, the defect in one sentence, and
-  the concrete failure scenario.
+- **Findings**, most severe first, numbered F1, F2, …: `path:line`, the defect in
+  one sentence, the concrete failure scenario, and what would convince you it is
+  fine. The author answers each one in the review-fix loop (`ai/08`).
 - **Gate coverage** — what ran against this tip, what did not, and which risks
   here no gate covers at all. This sentence is the most valuable thing you produce.
 - **Blast radius** — consumers of every shared file touched.

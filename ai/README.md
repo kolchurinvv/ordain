@@ -24,7 +24,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `05-agent-authoring.md` | Writing sub-agents; keeping definitions + memory in git. |
 | `06-knowledge-placement.md` | The pointer pattern: where each kind of knowledge belongs. |
 | `07-agent-roster.md` | The standing roster of specialists and the delegation policy. |
-| `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings. |
+| `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings; the review-fix loop that answers every finding. |
 | `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
 | `10-test-discipline.md` | What tests must prove: persistence verified by reading it back from the real store; tests that can fail; real dependencies with fakes quarantined; behaviors covered, not only lines. |
 | `11-quality-ratchets.md` | The machinery behind rule 4: floors per area raised only, the floor gate as the local gate, one exemption registry per family of gates, grandfather lists that only shrink, gates that fail loud. |
