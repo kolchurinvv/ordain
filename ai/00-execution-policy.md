@@ -66,6 +66,10 @@ the project has an exemptions registry, exemptions live *only* there, edits to
 it require user approval, and stale entries (matching nothing) should fail the
 gate. Scattered `// lint-allow` comments rot; a central registry is auditable.
 
+The machinery (floors per area, the floor gate as the local gate, exemption
+registries, grandfather lists that only shrink) is in
+`ai/11-quality-ratchets.md`.
+
 ## 5. Keep the human-facing status doc aligned
 
 The status doc (top-level `README.md`, a roadmap board, a `STATUS.md`) is the

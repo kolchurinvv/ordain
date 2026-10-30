@@ -24,6 +24,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 | Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
+| Setting or changing a coverage floor, threshold, exemption or grandfather list | `ai/11-quality-ratchets.md` |
 
 ### Non-negotiable core
 
@@ -42,7 +43,7 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    recorded in the commit message.
 4. **Quality gates ratchet upward only.** Coverage floors, lint thresholds, and
    checks may be raised, never relaxed — except with explicit user approval in
-   the commit message.
+   the commit message. See `ai/11`.
 5. **Keep the human-facing status doc aligned in the same change.** When work
    changes project shape (a milestone advances, a component flips status),
    update the status doc (README / roadmap) in the *same* commit series.

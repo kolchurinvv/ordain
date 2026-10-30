@@ -27,6 +27,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `08-adversarial-review.md` | Reviewing agent-authored work: conformance-to-request first, green is a claim, falsify your own findings. |
 | `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
 | `10-test-discipline.md` | What tests must prove: persistence verified by reading it back from the real store; tests that can fail. |
+| `11-quality-ratchets.md` | The machinery behind rule 4: floors per area raised only, the floor gate as the local gate, one exemption registry per family of gates, grandfather lists that only shrink. |
 | `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer, star-pupil. |
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |

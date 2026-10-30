@@ -36,6 +36,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Reviewing agent-authored work before it lands | `ai/08-adversarial-review.md` (+ `ai/agents/adversary.md`) |
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 | Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
+| Setting or changing a coverage floor, threshold, exemption or grandfather list | `ai/11-quality-ratchets.md` |
 
 ### Non-negotiable core
 
@@ -54,7 +55,7 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    recorded in the commit message.
 4. **Quality gates ratchet upward only.** Coverage floors, lint thresholds, and
    checks may be raised, never relaxed — except with explicit user approval in
-   the commit message.
+   the commit message. See `ai/11`.
 5. **Keep the human-facing status doc aligned in the same change.** When work
    changes project shape (a milestone advances, a component flips status),
    update the status doc (README / roadmap) in the *same* commit series.
@@ -115,6 +116,8 @@ rather than staying silent.
 | Status doc (rule 5) | None yet (no root `README.md`); `ai/README.md` describes the kit. |
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
 | `<read-back>` (`ai/10`) | none: the kit stores nothing and has no tests yet. |
+| `<floors>` (`ai/11`) | none: nothing is measured yet (no tests, no linted code beyond two shell scripts). |
+| `<exemptions>` (`ai/11`) | none: no gate takes exemptions. |
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |

@@ -116,6 +116,8 @@ value, a blank is not.
 | Status docs (rule 5) | The README or roadmap that must stay current. |
 | Generated baselines (rule 3) | Snapshots, fixtures, migrations, lockfiles: files agents must never rewrite unasked. |
 | `<read-back>` (`ai/10`) | How tests read a stored record back from the real store: the database or store, the helper or test handle, how test data is isolated. `none: <why>` if nothing persists. |
+| `<floors>` (`ai/11`) | Where the floors are configured, the command that enforces them (part of the gate), and the current global numbers. `none: <why>` if nothing is measured yet. |
+| `<exemptions>` (`ai/11`) | Where each family of gates keeps its exemption registry. `none: <why>` if no gate takes exemptions. |
 | Quality gates (rule 4) | The checks that may only get stricter. |
 | CI (rule 6) | What runs on which event, and how to watch it. |
 | Adversarial review (core 10) | How independent review is run here. |
