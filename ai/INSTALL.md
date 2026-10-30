@@ -17,6 +17,9 @@ arrives only after it is promoted into an `ai/` module, with your next update.
 **You need:** `bash`, `curl`, `tar`, `git`. While the kit repository is
 private, you also need read access to `kolchurinvv/ordain` and `gh auth login`.
 
+To hand the whole adoption to an agent instead, use the prompt in § Adopting
+with an agent.
+
 ## Install
 
 ### 1. Branch first
@@ -186,6 +189,37 @@ can see where a fix belongs. GitHub Actions:
     steps:
       - uses: actions/checkout@v4
       - run: ai/sync.sh --check .
+```
+
+## Adopting with an agent
+
+To have an agent do the adoption, paste this into whichever agent works in the
+repository. It names no tool and needs no filling in. It carries steps 1–3
+itself, because the kit isn't in the repository yet, and hands over to this file
+from step 4 on.
+
+```text
+Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how AI agents work here, whatever the tool or model. The result is a pull request into the default branch for the maintainers to review. Read this whole message before doing anything.
+
+1. Branch first. Never work on the default branch, and name the branch the way this repository names branches. If the repository keeps one worktree per branch, add a worktree instead of switching branches in an existing one.
+
+2. Mark where the rules go. In AGENTS.md (create it with a "# AGENTS.md" title if it's missing), add these two lines right after the project summary:
+       <!-- ord-ai-n:core:begin -->
+       <!-- ord-ai-n:core:end -->
+
+3. Run the installer from the repository root:
+       curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
+   While the kit repository is private, add -H "Authorization: Bearer $(gh auth token)" to that curl.
+
+4. From here on, follow ai/INSTALL.md, which is now in the repository, from Install step 4 to the end of step 6. It is the procedure; this message only adds emphasis:
+   - Bindings: find every value in the repository itself. State gaps instead of fixing them. Where the repository has its own governing documents (a constitution, CONTRIBUTING, decision records), they win over the kit. Say so in the Bindings, and follow them for branch names, commit messages, and what must pass before a pull request.
+   - Never edit ai/ or the generated block by hand; only the installer writes them.
+   - Before the pull request, run the repository's gate the way it requires. Don't copy anyone's secrets to make it run, and don't take a shared resource (a test database, a container) that another checkout is using. If you can't run it, say so.
+   - One concern per pull request. Changes to tools the maintainers already run go in a separate pull request.
+
+5. Commit as you go, one concern per commit, in the repository's format. Show me the branch, the commits and the pull request text. Push and open it only when I say so. Then watch its CI to a green conclusion on the pull request's head commit, job by job, and report.
+
+Ask me about anything this repository's own documents don't settle: a ticket key, which coding tools contributors use, what may run locally.
 ```
 
 ## Update
