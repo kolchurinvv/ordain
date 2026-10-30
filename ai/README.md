@@ -28,6 +28,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `09-parallel-streams.md` | Running several agents on one codebase: frozen/owned/shared allocation, append protocol, resource serialization. |
 | `10-test-discipline.md` | What tests must prove: persistence verified by reading it back from the real store; tests that can fail; real dependencies with fakes quarantined; behaviors covered, not only lines. |
 | `11-quality-ratchets.md` | The machinery behind rule 4: floors per area raised only, the floor gate as the local gate, one exemption registry per family of gates, grandfather lists that only shrink, gates that fail loud. |
+| `12-static-strictness.md` | Type checker, linter and formatter as hard gates (warnings are errors), strictest settings, architecture rules as lint rules, invariant guard scripts, drift checks for generated code. |
 | `agents/*.md` | Drop-in specialist definitions: adversary, coding-teacher, explorer, planner, reviewer, star-pupil. |
 | `providers.md` | How each AI tool ingests the kit; one source of truth, thin entrypoints. |
 | `templates/pre-commit` | Hook that delegates to the project gate. |

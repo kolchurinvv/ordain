@@ -25,6 +25,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 | Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
 | Setting or changing a coverage floor, threshold, exemption or grandfather list | `ai/11-quality-ratchets.md` |
+| Configuring the type checker, linter, formatter or a guard script; writing an architecture rule | `ai/12-static-strictness.md` |
 
 ### Non-negotiable core
 

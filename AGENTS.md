@@ -37,6 +37,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Running several agents on one codebase at once | `ai/09-parallel-streams.md` |
 | Writing tests, especially for anything that persists data | `ai/10-test-discipline.md` |
 | Setting or changing a coverage floor, threshold, exemption or grandfather list | `ai/11-quality-ratchets.md` |
+| Configuring the type checker, linter, formatter or a guard script; writing an architecture rule | `ai/12-static-strictness.md` |
 
 ### Non-negotiable core
 
@@ -122,6 +123,7 @@ rather than staying silent.
 | `<read-back>` (`ai/10`) | none: the kit stores nothing and has no tests yet. |
 | `<floors>` (`ai/11`) | none: nothing is measured yet (no tests, no linted code beyond two shell scripts). |
 | `<exemptions>` (`ai/11`) | none: no gate takes exemptions. |
+| `<static-checks>` (`ai/12`) | Partial: `shellcheck` on `ai/sync.sh` and `install.sh`, run by hand, not yet a gate. |
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
