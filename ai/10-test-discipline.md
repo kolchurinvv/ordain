@@ -42,3 +42,30 @@ Each of those passes a test that only checks what the caller saw.
   happens to output today.
 - **Don't weaken a test to make it pass.** Deleting an assertion, loosening it,
   or skipping the test lowers a gate (`ai/00` rule 4).
+
+## 3. Test against the real thing; quarantine fakes
+
+- **Data-shaped tests run against a real instance of the store,** such as an
+  in-memory or disposable real server. Not against a hand-written fake: a fake
+  agrees with whatever the code under test assumes, so it passes exactly the
+  mistakes you most need to catch.
+- **Fakes exist only for misbehavior** a real dependency can't be ordered to
+  produce: refusing a connection, timing out, losing a race, returning a
+  malformed value.
+- **Keep the fakes in one place that exports nothing,** so they can't be
+  imported around the rule.
+- **Guard the quarantine statically.** Match what any fake must do, such as
+  building a stand-in for the client's type or mocking the client's module,
+  not the names of helpers. Names change; the cast doesn't.
+
+## 4. Cover behaviors, not only lines
+
+Line coverage shows that code ran, not that each behavior a user or caller
+relies on is exercised end to end.
+
+- **Keep a manifest of behaviors:** routes, screens, jobs, commands, each with
+  the end-to-end test that covers it.
+- **Check the manifest against the code,** so a new behavior can't arrive
+  without an entry.
+- **Fail on a behavior that has neither a test nor an exemption** in the
+  registry (`ai/11` rules 4 and 8).
