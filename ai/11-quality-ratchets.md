@@ -102,3 +102,25 @@ safety that isn't there. Every gate fails, with a message saying why, when:
 
 Confirm that a new gate fails by breaking the thing it guards once before you
 trust its green (`ai/10` rule 2 applies to gates too).
+
+## 9. Guard the guards
+
+The files that define the gates are the cheapest way to make a change go
+green without being right, so they get protection of their own:
+
+- **Tests pin the gate wiring.** The CI umbrella's name and dependencies, the
+  absence of `continue-on-error` or `|| true` on gate steps, the members of
+  the local aggregate, and each tool-call guard's behavior all have tests. A
+  refactor that quietly drops a gate fails (`ai/02` § One umbrella check).
+- **Gate-defining files have owners:** gate configuration, exemption
+  registries, guard scripts, CI workflows, baselines, dependency manifests,
+  and the dev environment's definition. Where the platform enforces code
+  owners, changes to these need the owner's review. Where it doesn't, the
+  adversarial review's erosion sweep is the backstop (`ai/08` rule 3).
+- **Automation gets a diff guard with two tiers:**
+  - **veto:** an automated change that touches gate configuration, exemption
+    registries, guard scripts, CI, baselines or dependency manifests is refused;
+  - **flag:** a change to the task runner or test infrastructure is allowed but
+    called out for a human.
+- **An automated run reports what actually ran:** a manifest of the gates that
+  ran, were skipped, or were never reached. Never a bare "passed".
