@@ -55,7 +55,11 @@ takes hold in three layers, from weakest guarantee to strongest:
 ### How
 
 Step by step, including branching first, a Bindings skeleton, updating and
-removing: `INSTALL.md`. Two rules shape every step:
+removing: `INSTALL.md`. The installer ships `ai/` and nothing else. The kit
+repository's `lessons/` is an inbox of candidate rules: a lesson reaches an
+adopting repository only once it has been promoted into an `ai/` module.
+
+Two rules shape every step:
 
 - **Reconcile, don't stack.** Where the host already has rules (a constitution,
   a commit convention, its own review skill), the host's documents win over the

@@ -1,12 +1,13 @@
 # Lessons
 
-Candidate rules harvested from projects and agent tools, waiting to be promoted
-into the kit. One file per lesson, in the format defined by the `star-pupil`
-agent (`ai/agents/star-pupil.md`), which writes them. The bar for promotion is
+The kit's inbox: candidate rules harvested from projects and agent tools,
+waiting to be promoted into the kit. One file per lesson, in the format defined
+by the `star-pupil` agent (`ai/agents/star-pupil.md`), which writes them. The bar for promotion is
 `ai/06-knowledge-placement.md` § Promoting a lesson out of a project.
 
-This directory is not part of the kit: `ai/sync.sh` ships `ai/` only, so nothing
-here reaches an adopting repository until it is promoted into a module.
+This directory is not part of the kit. The installer ships `ai/` only, so a
+lesson here reaches no adopting repository, however useful it is, until it is
+promoted into an `ai/` module and the repository updates.
 
 ## How lessons arrive
 

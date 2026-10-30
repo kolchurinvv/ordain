@@ -10,6 +10,10 @@ rewrites the block between two marker lines in `AGENTS.md`. Nothing else. It
 refuses to overwrite an `ai/` directory it didn't create, or one with
 uncommitted changes.
 
+**What it ships:** `ai/` only. The kit repository's `lessons/` directory is an
+inbox of candidate rules, and nothing in it reaches your repository. A lesson
+arrives only after it is promoted into an `ai/` module, with your next update.
+
 **You need:** `bash`, `curl`, `tar`, `git`. While the kit repository is
 private, you also need read access to `kolchurinvv/ordain` and `gh auth login`.
 
