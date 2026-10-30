@@ -82,3 +82,23 @@ A gate introduced over an existing backlog may start as a warning, but only
 with a recorded plan to switch it to failing once the backlog is gone. A gate
 that only warns blocks nothing (`ai/08` rule 2). Don't count it as a gate until
 it fails.
+
+## 8. Gates fail loud
+
+A gate that passes without checking anything is worse than no gate: it reports
+safety that isn't there. Every gate fails, with a message saying why, when:
+
+- **It cannot run.** A missing tool, a missing config file, or a dependency that
+  won't start is red, never a skip.
+- **It saw nothing.** It scanned zero files, collected zero tests, or found no
+  baseline to compare against. Assert a minimum, such as at least one test file,
+  or the number of modules you expect, so that a moved directory or a broken
+  glob fails instead of passing vacuously.
+- **It meets a case it doesn't know.** A new file type, an unexpected format or
+  an unrecognized option is an error, not something to ignore.
+- **It checks by enumeration.** A gate that checks only the paths it lists
+  silently skips everything added later. Check everything by default, and
+  exempt by entry in the registry (rule 4).
+
+Confirm that a new gate fails by breaking the thing it guards once before you
+trust its green (`ai/10` rule 2 applies to gates too).

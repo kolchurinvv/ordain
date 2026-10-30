@@ -28,7 +28,7 @@ repository's decision records say otherwise, they win over the kit's defaults.
 | Operating at all (start here) | `ai/00-execution-policy.md` |
 | Committing, branching, opening a PR, tagging | `ai/01-commit-and-pr-hygiene.md` |
 | After any push / watching CI | `ai/02-ci-discipline.md` |
-| Writing code that touches the network, storage, or native/external APIs | `ai/03-defensive-coding.md` |
+| Writing code that touches the network, storage, or native/external APIs, or that handles errors at all | `ai/03-defensive-coding.md` |
 | Recording or recalling cross-session knowledge | `ai/04-memory-framework.md` |
 | Authoring or editing a sub-agent definition | `ai/05-agent-authoring.md` |
 | Deciding *where* a piece of knowledge belongs | `ai/06-knowledge-placement.md` |
@@ -61,8 +61,11 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    update the status doc (README / roadmap) in the *same* commit series.
 6. **Watch every push to a green conclusion.** "It probably didn't break
    anything" is how red reaches the main branch. See `ai/02`.
-7. **Never crash on external failure.** Networks time out, payloads are
-   malformed, storage is unwritable. Degrade gracefully. See `ai/03`.
+7. **Fail soft on the world, loud on yourself.** Networks time out, payloads are
+   malformed, storage is unwritable: degrade gracefully. But a broken invariant,
+   a contract your own code violates, or a check that cannot run fails loudly and
+   at once — never a silent default, a swallowed error, or a vacuous pass. See
+   `ai/03`.
 8. **Autonomous mode is conditional on rules 1–7.** Where a repository grants
    broad tool permissions, they hold only while the rules above are honored. The
    instant one cannot be, drop out and confirm with the user. See `ai/00`.

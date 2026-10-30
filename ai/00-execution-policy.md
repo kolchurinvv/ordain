@@ -84,10 +84,14 @@ After any push, watch every relevant CI workflow to a terminal conclusion before
 considering the work done. The full discipline is in `ai/02-ci-discipline.md`.
 The one-line version: **assuming green is how red reaches the main branch.**
 
-## 7. Defensive by default
+## 7. Fail soft on the world, loud on yourself
 
-Code you write must not crash on external/upstream/system failure. Full rules in
-`ai/03-defensive-coding.md`.
+Code you write must not crash on external, upstream or system failure: degrade
+gracefully. And it must never hide its own failures: a broken invariant, a
+violated contract, or a check that cannot run fails loudly, at once, where the
+cause is. A silent fallback around your own code turns the bug you just
+introduced into one nobody will find. Full rules in
+`ai/03-defensive-coding.md`; for gates, `ai/11-quality-ratchets.md` rule 8.
 
 ## 8. Autonomous ("yolo") mode — conditional
 

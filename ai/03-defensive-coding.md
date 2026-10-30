@@ -45,3 +45,30 @@ the same.
 
 The distinction in rule 6 is the whole point: fail loud on *your* bugs, fail
 soft on *the world's* failures.
+
+## Failing loud
+
+The soft half above keeps the app alive. The loud half keeps a change from
+quietly breaking what already worked, and it matters most when agents write
+most of the code. An agent's mistake that throws is found in the next test run;
+one that falls back silently is found by a user, weeks later.
+
+- **No catch-and-continue around your own code.** Catch where you can do
+  something meaningful (an external boundary, rule 1), and let everything else
+  propagate. A catch that logs and carries on inside your own logic hides the
+  bug at the point it happened.
+- **No defaults for values that cannot be missing.** If the type, the schema
+  or an earlier validation guarantees a value, don't paper over its absence
+  with a fallback (an empty list, a zero, an optional chain). Validate once at
+  the boundary (rule 2), then trust it; an absence past that point is a bug, so
+  throw.
+- **Exhaustive handling.** Every branch on a closed set (an enum, a tagged
+  union, a status) handles every case, and its default throws. A default that
+  quietly does nothing turns the next added case into a silent no-op.
+- **Unknown input to your own functions is an error.** An unrecognized option,
+  mode or key raises, rather than being ignored.
+- **Tests pin the failure too.** For each invariant, a test asserts that
+  breaking it raises (`ai/10`).
+- **The same goes for tooling.** A script or check that cannot do its job (a
+  missing tool, no input, nothing matched) exits non-zero and says why. It never
+  reports success (`ai/11` rule 8).
