@@ -31,6 +31,19 @@ single source of truth for "what passes." See `ai/templates/pre-commit`.
 to the aggregate in the *same* commit series — otherwise the gate silently skips
 it and the coverage is a lie.
 
+**Run it without borrowing secrets.** When the gate needs configuration
+(database credentials, API keys), give it throwaway values in the environment,
+or a test-only file the repository provides. Never copy another checkout's or
+another person's secrets file to make it run: it holds real credentials, and a
+check that needs real ones is not a local gate. Say how the gate gets its
+configuration in the `<gate-command>` binding.
+
+**Check shared resources before running it.** A gate that recreates a
+fixed-name resource (a container, a database, a port) takes it away from whoever
+holds it, including another checkout of the same repository. Check it is free
+first, and ask if it isn't (`ai/09-parallel-streams.md` § Shared local
+resources).
+
 ## Commit messages
 
 **The repository's own convention wins.** If it has one (a ticket-key prefix

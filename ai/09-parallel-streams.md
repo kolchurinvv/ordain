@@ -80,6 +80,9 @@ staging deployment. These are the failures that waste the most wall-clock,
 because both streams appear to be working right up until both fail.
 
 - **Name them in the contract**, with their concurrency limit.
+- **Gates are the usual way in.** A test runner that recreates a fixed-name
+  container or database deletes the instance another checkout is using. Name
+  such runners next to the resource they take.
 - **Everything that does not need them runs freely in parallel** — typecheck,
   lint, unit tests, the offline half of the gate. Do not serialize work that has
   no contention.
