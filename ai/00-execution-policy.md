@@ -135,3 +135,24 @@ above (`ai/providers.md` § Enforcing rules at tool-call time).
 
 Autonomy is about removing tedium (manual commit/push/test cycles), not about
 removing judgment on the few actions that are actually dangerous.
+
+## Definition of done
+
+A change is done when all of these hold, and the report says which were
+checked and how:
+
+1. **It does what was asked,** every part of it (`ai/08` rule 1).
+2. **Its tests are in the same commit series,** written test-first where the
+   layer calls for it, with persistence read back from the real store
+   (`ai/10`).
+3. **The fast tier passed on the final head,** and the strict tier too where
+   the repository requires it before a PR (`ai/01` § The gate).
+4. **No gate was loosened** without the user's approval recorded in the commit
+   (rule 4, `ai/11`).
+5. **The review-fix loop is closed:** every finding fixed, rebutted with
+   evidence, or held for a ruling (`ai/08`).
+6. **The status docs are current** (rule 5).
+7. **CI is green on the pushed head,** every job, watched to the end (rule 6).
+
+Whatever couldn't be done or verified is named in the report, never left to be
+inferred from silence.

@@ -73,6 +73,9 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
 > module that cites it. Items 9–10 are core rules whose depth lives elsewhere.
 > If you change one list, change the other in the same commit.
 
+**Done means done.** A change is finished only when `ai/00` § Definition of
+done holds. Name whatever you couldn't verify in your report.
+
 ### Autonomy level
 
 The default posture is **propose-then-act for anything outward-facing or hard to
