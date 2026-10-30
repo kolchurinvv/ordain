@@ -108,6 +108,22 @@ reports conflicts they already have with the base, which you didn't cause. Say
 both in the PR body: your files merge cleanly, and any pre-existing conflicts
 belong to the other PRs.
 
+**Stacked pull requests: know how CI and the merge style treat them.** A PR whose
+base is another PR's branch looks tidy, and it can still fail two ways:
+
+- **No checks.** Where CI runs only on pull requests into the default branch,
+  the stacked PR runs nothing, and no checks is not green (`ai/02`). Say in its
+  body that checks run after it is retargeted.
+- **Stale commits after a squash merge.** Once the base PR is squash-merged,
+  the stacked branch still carries the base's original commits. Rebase it onto
+  the default branch before retargeting, dropping those commits:
+
+  ```
+  git rebase --onto origin/<default> <base-branch-tip> <stacked-branch>
+  ```
+
+Give the stacked branch its own name, following the repository's convention.
+
 **Enforce issue-first with a gate, not a convention.** A CI job that fails any PR
 whose body carries no issue reference is worth its weight: it makes every change
 traceable to the request that motivated it. That link is not bookkeeping — it is
