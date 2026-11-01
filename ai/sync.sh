@@ -94,14 +94,16 @@ place_markers() {
     return 0
   fi
   counts=$(awk -v b="$BEGIN" -v e="$END" '
-    { t = $0; gsub(/^[ \t]+|[ \t\r]+$/, "", t); if (t == b) nb++; if (t == e) ne++ }
-    END { print nb + 0, ne + 0 }' "$agents")
+    { t = $0; gsub(/^[ \t]+|[ \t\r]+$/, "", t)
+      if (t == b) { nb++; lb = NR }
+      if (t == e) { ne++; le = NR } }
+    END { print nb + 0, ne + 0, (lb < le) ? "in-order" : "reversed" }' "$agents")
   case "$counts" in
-    "1 1")
+    "1 1 in-order")
       content=$(awk -v b="$BEGIN" -v e="$END" '
         { t = $0; gsub(/^[ \t]+|[ \t\r]+$/, "", t); if (t == b || t == e) print t; else print }
       ' "$agents") ;;
-    "0 0")
+    "0 0 "*)
       # Before the first heading that isn't the opening title; "# x" in a code fence is no heading.
       content=$(awk -v b="$BEGIN" -v e="$END" '
         function put() { if (prev != "") print ""; print b; print e }
