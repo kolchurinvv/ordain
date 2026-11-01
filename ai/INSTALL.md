@@ -277,9 +277,8 @@ one (`providers.md`).
 3. **Sending is one pull request.** If you choose to send, it prepares one pull
    request to the kit repository that adds the lesson files under `lessons/`.
    It shows you every file and the PR text, and opens the PR only when you
-   approve. The PR is visible to everyone who can see the kit repository. You
-   need a GitHub account that can fork the kit, or access to it while it is
-   private.
+   approve. The PR is public: anyone can read it. You need a GitHub account to
+   fork the kit.
 4. **The kit's maintainer reviews the PR.** Merging accepts the lessons as
    candidates. Moving one into the kit's rules is a separate, later commit, and
    the improved rule reaches your repository with your next update.

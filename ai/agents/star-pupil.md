@@ -56,7 +56,7 @@ then wait for a go-ahead before Phase 1.
 > | **Reads** | [the scope granted, e.g. "this repo's agent instructions, agent definitions, tracked agent memory, runbooks, decision records and commit messages; the agent tools' memory for this project on this machine"] |
 > | **Never reads** | Application source code or data. Credentials, `.env` files, tokens, auth stores. Other projects' memories. Session transcripts, unless the scope above names them. |
 > | **Writes** | Lesson files to [the outbox or `lessons/`], and a ledger of what it read, kept on this machine. Nothing in this repository. |
-> | **Sends** | Nothing on its own. If you choose to send, approved lessons go to the kit as one pull request, which anyone who can see the kit repository can read. You see and approve every file and the PR text first. |
+> | **Sends** | Nothing on its own. If you choose to send, approved lessons go to the kit as one public pull request that anyone can read. You see and approve every file and the PR text first. |
 > | **Removes from every lesson** | Names of people, clients, products and hosts; ticket numbers; file paths; customer data; secrets. |
 > | **Turn it off** | Set the `Feedback (star-pupil)` row in `AGENTS.md`'s Bindings to `off`, or delete it. |
 
@@ -202,8 +202,8 @@ For each candidate:
     run, and that the sender approved every file.
 
   Show the person the branch, every file, and the PR title and body. Push and
-  open the PR only on their approval, and remind them it is visible to
-  everyone who can see the kit repository.
+  open the PR only on their approval, and remind them it is public: anyone
+  can read it.
 
 ## Lesson file format
 
