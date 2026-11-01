@@ -96,30 +96,30 @@ Options go after `bash -s --`:
 ### 4. Write the Bindings
 
 Directly after the end marker, add a `## Bindings` table. It maps the kit's
-generic rules onto this repository. Fill every row; `none: <why>` is a valid
-value, a blank is not.
+generic rules onto this repository. Replace every `TODO`; `none: <why>` is a
+valid value, a blank is not.
 
 ```markdown
 ## Bindings
 
 | Binding | Here |
 |---|---|
-| `<gate-command>` | The command that runs the checks before a commit, and what to do where it can't run. |
-| `<base>` branch | |
-| Branches and commits | The repository's naming and message format. |
-| Decision records | Where architecture and stack decisions are written down. |
-| Status docs (rule 5) | The README or roadmap that must stay current. |
-| Generated baselines (rule 3) | Snapshots, fixtures, migrations, lockfiles: files agents must never rewrite unasked. |
-| `<read-back>` (`ai/10`) | How tests read a stored record back from the real store: the database or store, the helper or test handle, how test data is isolated. `none: <why>` if nothing persists. |
-| `<floors>` (`ai/11`) | Where the floors are configured, the command that enforces them (part of the gate), and the current global numbers. `none: <why>` if nothing is measured yet. |
-| `<exemptions>` (`ai/11`) | Where each family of gates keeps its exemption registry. `none: <why>` if no gate takes exemptions. |
-| `<static-checks>` (`ai/12`) | The type-check, lint, format and guard commands, whether warnings fail, and the invariants the guards hold. State gaps (`none: no lint gate yet`). |
-| Quality gates (rule 4) | The checks that may only get stricter. |
-| CI (rule 6) | What runs on which event, and how to watch it. |
-| Adversarial review (core 10) | How independent review is run here. |
-| Agent definitions | Where agent and skill files live. |
-| Memory root | Where shared agent memory lives, or none. |
-| Autonomy | What agents may do without asking. |
+| `<gate-command>` | TODO: The command that runs the checks before a commit, and what to do where it can't run. |
+| `<base>` branch | TODO: The branch changes merge into. |
+| Branches and commits | TODO: The repository's naming and message format. |
+| Decision records | TODO: Where architecture and stack decisions are written down. |
+| Status docs (rule 5) | TODO: The README or roadmap that must stay current. |
+| Generated baselines (rule 3) | TODO: Snapshots, fixtures, migrations, lockfiles: files agents must never rewrite unasked. |
+| `<read-back>` (`ai/10`) | TODO: How tests read a stored record back from the real store: the database or store, the helper or test handle, how test data is isolated. `none: <why>` if nothing persists. |
+| `<floors>` (`ai/11`) | TODO: Where the floors are configured, the command that enforces them (part of the gate), and the current global numbers. `none: <why>` if nothing is measured yet. |
+| `<exemptions>` (`ai/11`) | TODO: Where each family of gates keeps its exemption registry. `none: <why>` if no gate takes exemptions. |
+| `<static-checks>` (`ai/12`) | TODO: The type-check, lint, format and guard commands, whether warnings fail, and the invariants the guards hold. State gaps (`none: no lint gate yet`). |
+| Quality gates (rule 4) | TODO: The checks that may only get stricter. |
+| CI (rule 6) | TODO: What runs on which event, and how to watch it. |
+| Adversarial review (core 10) | TODO: How independent review is run here. |
+| Agent definitions | TODO: Where agent and skill files live. |
+| Memory root | TODO: Where shared agent memory lives, or none. |
+| Autonomy | TODO: What agents may do without asking. |
 | `Feedback (star-pupil)` | off |
 | The kit itself | Vendored from ord-ai-n (version in `ai/.kit-manifest`). Update by re-running the installer; never edit `ai/` or the block above. |
 ```
@@ -149,9 +149,9 @@ git add ai AGENTS.md   # plus any entrypoint files from step 5
 git commit        # the repository's message format; name the source line from ai/.kit-manifest
 ```
 
-`--check` also fails while a placeholder from the skeleton in step 4 has no
-row in your Bindings, and it names the missing ones. After an update that adds
-a placeholder, that tells you which row to write.
+`--check` also fails while a Bindings row is blank or still says `TODO`, or while
+a placeholder from the skeleton in step 4 has no row, and it names them. After an
+update that adds a placeholder, that tells you which row to write.
 
 Before opening the pull request:
 

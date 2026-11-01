@@ -8,10 +8,10 @@
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
 #                              under ai/) unless --force is given.
-#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest,
-#                              <repo>/AGENTS.md's core block differs from ai/CORE.md, or a
-#                              placeholder in the Bindings skeleton (ai/INSTALL.md) has no
-#                              row in AGENTS.md's Bindings.
+#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest or
+#                              <repo>/AGENTS.md's core block differs from ai/CORE.md. Exit 3 if
+#                              only the Bindings are unfinished: a placeholder in the skeleton
+#                              (ai/INSTALL.md) has no row, or a row is blank or still says TODO.
 #                              Cheap enough for CI: the drift guard that holds whichever
 #                              agent or model made the change.
 #                              This is the only mode a vendored copy runs.
@@ -51,6 +51,13 @@ unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
     tail -n "+$(($3 + 1))" "$1" | grep -qF "\`$p\`" || echo "$p"
   done
 }
+# Bindings rows still to fill in: their value is blank or starts with the skeleton's TODO.
+unfilled() {  # $1 = AGENTS.md, $2 = line of the end marker
+  awk -F'|' -v from="$2" '
+    NR <= from { next }
+    /^#+[ \t]/ { s = ($0 ~ /^#+[ \t]+Bindings([ \t\r]|$)/); next }
+    s && /^\|/ && $3 ~ /^[ \t]*(TODO|$)/ { print $2 }' "$1" | sed 's/^ *//; s/ *$//'
+}
 
 check=0
 force=0
@@ -83,6 +90,7 @@ if [ "$check" = 1 ]; then
   cd "$target"
   [ -f ai/CORE.md ] || die "$target/ai/CORE.md not found: the kit is not vendored here"
   status=0
+  unfinished=0
   if ! block_diff=$(sed -n "$((begin_line + 1)),$((end_line - 1))p" AGENTS.md |
                     diff -u -L ai/CORE.md -L 'AGENTS.md core block' ai/CORE.md -); then
     echo "sync: AGENTS.md's core block was edited in place. Put repo-specific values in Bindings;" >&2
@@ -94,7 +102,13 @@ if [ "$check" = 1 ]; then
   if [ -n "$missing" ]; then
     echo "sync: AGENTS.md's Bindings have no row for (see ai/INSTALL.md step 4):" >&2
     echo "$missing" | sed 's/^/  /' >&2
-    status=1
+    unfinished=1
+  fi
+  todo=$(unfilled AGENTS.md "$end_line")
+  if [ -n "$todo" ]; then
+    echo "sync: AGENTS.md's Bindings still have rows to fill in (see ai/INSTALL.md step 4):" >&2
+    echo "$todo" | sed 's/^/  /' >&2
+    unfinished=1
   fi
   # The kit's own checkout has no manifest; a vendored copy always does.
   if [ -f "$MANIFEST" ]; then
@@ -115,8 +129,10 @@ if [ "$check" = 1 ]; then
       status=1
     fi
   fi
-  [ "$status" = 0 ] && echo "sync: agent kit in sync"
-  exit "$status"
+  [ "$status" = 0 ] || exit "$status"
+  [ "$unfinished" = 0 ] || exit 3
+  echo "sync: agent kit in sync"
+  exit 0
 fi
 
 # Refuse to overwrite what this script didn't write. A vendored copy (it has a manifest) only
