@@ -11,8 +11,9 @@
 # The kit repo is public, so this script reads it anonymously and never sends a credential.
 #
 # ORD_AI_N_REPO=<owner>/<name>  install from a public fork (default kolchurinvv/ordain).
-# ORD_AI_N_TARBALL=<url>        install from that .tar.gz instead: a mirror, or file:// to test
-#                               a local build. The manifest records it.
+# ORD_AI_N_TARBALL=<url>        install from that .tar.gz instead: a mirror, or file:// for a
+#                               private fork's tarball you downloaded, or a local build to test.
+#                               The manifest records it.
 
 set -euo pipefail
 
