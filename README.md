@@ -35,11 +35,16 @@ Work on a new branch, from the root of the repository you're adopting it in.
    the kit's rules onto your repository. Fill every row; `none: <why>` is a valid
    value, a blank is not.
 
-4. **Check and commit:**
+4. **Point your other tools at it.** Most coding agents read `AGENTS.md` by
+   themselves. Some don't, or stop once their own file exists, and then the rules
+   are silently inactive. [`ai/providers.md`](ai/providers.md#wire-the-entrypoints)
+   says what to add, per tool.
+
+5. **Check and commit:**
 
    ```sh
    ai/sync.sh --check .
-   git add ai AGENTS.md
+   git add ai AGENTS.md   # plus any entrypoint files from step 4
    git commit
    ```
 
@@ -51,8 +56,8 @@ bash /tmp/install.sh
 ```
 
 [`ai/INSTALL.md`](ai/INSTALL.md) has the full procedure: worktree layouts,
-installer options such as pinning a version with `--ref`, wiring tools that don't
-read `AGENTS.md`, opening the pull request, and removing the kit. To hand the
+installer options such as pinning a version with `--ref`, opening the pull
+request, and removing the kit. To hand the
 adoption to an agent instead, paste the prompt in
 [§ Adopting with an agent](ai/INSTALL.md#adopting-with-an-agent).
 
