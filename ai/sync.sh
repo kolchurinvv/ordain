@@ -167,7 +167,11 @@ if [ "$check" = 1 ]; then
       status=1
     fi
     if git rev-parse --git-dir >/dev/null 2>&1; then
-      present=$(git ls-files ai | grep -vxF "$MANIFEST" || true)
+      # A tracked file the sync just removed is gone from disk, so it isn't extra. If the manifest
+      # still lists it, the hash check above has already failed.
+      present=$(git ls-files ai | while IFS= read -r f; do
+                  if [ -e "$f" ] && [ "$f" != "$MANIFEST" ]; then echo "$f"; fi
+                done)
     else
       present=$(find ai -type f ! -path "$MANIFEST" | sort)
     fi
