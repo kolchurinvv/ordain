@@ -6,8 +6,12 @@ branch and through the repository's normal review. Why it is shaped this way:
 `README.md` § Adopt it in a repository.
 
 **What the installer touches:** it adds `ai/` (including `ai/.kit-manifest`) and
-rewrites the block between two marker lines in `AGENTS.md`. Nothing else. It
-refuses to overwrite an `ai/` directory it didn't create, or one with
+writes the core rules into `AGENTS.md`, creating the file if it's missing.
+Nothing else, and it leaves git alone. The rules sit between two marker lines. If
+the file has neither, the installer adds them before the first heading after the
+title, or at the end; move them if the rules belong elsewhere, and later runs keep
+them there. If the file has no `## Bindings` section, it adds one after the rules.
+It refuses to overwrite an `ai/` directory it didn't create, or one with
 uncommitted changes.
 
 **What it ships:** `ai/` only. The kit repository's `lessons/` directory is an
@@ -57,20 +61,7 @@ git -C .bare config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
 git -C .bare fetch origin
 ```
 
-### 2. Mark where the rules go
-
-Open `AGENTS.md` (create it with a `# AGENTS.md` title if the repository has
-none). Add these two lines right after the project summary, or right under the
-title if there is no summary:
-
-```
-<!-- ord-ai-n:core:begin -->
-<!-- ord-ai-n:core:end -->
-```
-
-The installer fills the space between them and never guesses where to put it.
-
-### 3. Run the installer
+### 2. Run the installer
 
 From the repository's root:
 
@@ -79,8 +70,8 @@ curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh 
 ```
 
 It downloads the kit at one exact commit, copies `ai/`, records that commit and
-a hash of every file in `ai/.kit-manifest`, and writes the core rules between
-the markers.
+a hash of every file in `ai/.kit-manifest`, and writes the core rules and a
+Bindings table into `AGENTS.md`.
 
 To read the script before running it, download it first:
 `curl -fsSL … -o /tmp/install.sh`, read it, then `bash /tmp/install.sh`.
@@ -93,11 +84,12 @@ Options go after `bash -s --`:
 | `--force` | Overwrite an existing `ai/` the installer didn't create. Only when you mean to replace it. |
 | `<path>` | Install into that repository instead of the current directory. |
 
-### 4. Write the Bindings
+### 3. Fill in the Bindings
 
-Directly after the end marker, add a `## Bindings` table. It maps the kit's
-generic rules onto this repository. Replace every `TODO`; `none: <why>` is a
-valid value, a blank is not.
+Directly after the rules, the installer added the `## Bindings` table below,
+unless the file already had one. It maps the kit's generic rules onto this
+repository, so this is the step that takes someone who knows the repository.
+Replace every `TODO`; `none: <why>` is a valid value, a blank is not.
 
 ```markdown
 ## Bindings
@@ -134,23 +126,23 @@ doesn't meet a rule yet, the row says so: for example, "no test reads a stored
 record back yet; start from <the test database helper>". Fixing the gap is
 separate work, not part of adopting.
 
-### 5. Wire the tools that don't read `AGENTS.md`
+### 4. Wire the tools that don't read `AGENTS.md`
 
 Most coding agents read `AGENTS.md` by themselves. Some read their own file
 instead, or stop reading `AGENTS.md` once their own file exists. For each tool
 the repository's contributors actually use, make its entrypoint import
 `AGENTS.md` rather than copy it. `providers.md` says how, per tool.
 
-### 6. Check, commit, open the PR
+### 5. Check, commit, open the PR
 
 ```sh
 ai/sync.sh --check .
-git add ai AGENTS.md   # plus any entrypoint files from step 5
+git add ai AGENTS.md   # plus any entrypoint files from step 4
 git commit        # the repository's message format; name the source line from ai/.kit-manifest
 ```
 
 `--check` also fails while a Bindings row is blank or still says `TODO`, or while
-a placeholder from the skeleton in step 4 has no row, and it names them. After an
+a placeholder from the skeleton in step 3 has no row, and it names them. After an
 update that adds a placeholder, that tells you which row to write.
 
 Before opening the pull request:
@@ -189,7 +181,7 @@ a fix belongs. GitHub Actions:
       - run: ai/sync.sh --check .
 ```
 
-### 7. Turn every gap into an issue
+### 6. Turn every gap into an issue
 
 A Bindings row that says `none`, or states a gap, is work the repository
 doesn't have yet. Open one issue for each, in the repository's own terms,
@@ -210,30 +202,27 @@ Don't fold them into the adoption PR.
 ## Adopting with an agent
 
 To have an agent do the adoption, paste this into whichever agent works in the
-repository. It names no tool and needs no filling in. It carries steps 1–3
+repository. It names no tool and needs no filling in. It carries steps 1–2
 itself, because the kit isn't in the repository yet, and hands over to this file
-from step 4 on.
+from step 3 on.
 
 ```text
 Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how AI agents work here, whatever the tool or model. The result is a pull request into the default branch for the maintainers to review. Read this whole message before doing anything.
 
 1. Branch first. Never work on the default branch, and name the branch the way this repository names branches. If the repository keeps one worktree per branch, add a worktree instead of switching branches in an existing one.
 
-2. Mark where the rules go. In AGENTS.md (create it with a "# AGENTS.md" title if it's missing), add these two lines right after the project summary:
-       <!-- ord-ai-n:core:begin -->
-       <!-- ord-ai-n:core:end -->
-
-3. Run the installer from the repository root:
+2. Run the installer from the repository root:
        curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
+   It writes AGENTS.md itself, including a Bindings table whose rows say TODO.
 
-4. From here on, follow ai/INSTALL.md, which is now in the repository, from Install step 4 to the end of step 6. It is the procedure; this message only adds emphasis:
+3. From here on, follow ai/INSTALL.md, which is now in the repository, from Install step 3 to the end of step 5. It is the procedure; this message only adds emphasis:
    - Bindings: find every value in the repository itself. State gaps instead of fixing them. Where the repository has its own governing documents (a constitution, CONTRIBUTING, decision records), they win over the kit. Say so in the Bindings, and follow them for branch names, commit messages, and what must pass before a pull request.
    - Never edit ai/ or the generated block by hand; only the installer writes them.
    - Before the pull request, run the repository's gate the way it requires. Don't copy anyone's secrets to make it run, and don't take a shared resource (a test database, a container) that another checkout is using. If you can't run it, say so.
    - One concern per pull request. Changes to tools the maintainers already run go in a separate pull request.
-   - After the pull request is open, list every gap the Bindings state and offer to open one issue per gap (ai/INSTALL.md step 7). Open them only when I agree.
+   - After the pull request is open, list every gap the Bindings state and offer to open one issue per gap (ai/INSTALL.md step 6). Open them only when I agree.
 
-5. Commit as you go, one concern per commit, in the repository's format. Show me the branch, the commits and the pull request text. Push and open it only when I say so. Then watch its CI to a green conclusion on the pull request's head commit, job by job, and report.
+4. Commit as you go, one concern per commit, in the repository's format. Show me the branch, the commits and the pull request text. Push and open it only when I say so. Then watch its CI to a green conclusion on the pull request's head commit, job by job, and report.
 
 Ask me about anything this repository's own documents don't settle: a ticket key, which coding tools contributors use, what may run locally.
 ```
@@ -241,7 +230,7 @@ Ask me about anything this repository's own documents don't settle: a ticket key
 ## Update
 
 1. Branch first, as in Install step 1.
-2. Re-run the install line from step 3.
+2. Re-run the install line from step 2.
 3. Commit the result on its own. Its diff is exactly what changed in the kit;
    the source line in `ai/.kit-manifest` shows which version you moved to.
 
@@ -256,7 +245,7 @@ git rm -r ai
 ```
 
 Then delete the marked block and the Bindings section from `AGENTS.md`, the
-imports you added to tool entrypoints in step 5, and the CI job if you added
+imports you added to tool entrypoints in step 4, and the CI job if you added
 one. Commit.
 
 ## Sending lessons back (optional)

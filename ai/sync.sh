@@ -4,7 +4,9 @@
 #   ai/sync.sh [--force] <repo>
 #                              Copy this kit's ai/ into <repo>/ai/, record what was copied in
 #                              <repo>/ai/.kit-manifest, and regenerate the core block in
-#                              <repo>/AGENTS.md from ai/CORE.md.
+#                              <repo>/AGENTS.md from ai/CORE.md. AGENTS.md is created if it is
+#                              missing, and gets the markers and the Bindings skeleton if it
+#                              lacks them.
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
 #                              under ai/) unless --force is given.
@@ -21,7 +23,8 @@
 #   <!-- ord-ai-n:core:begin -->
 #   <!-- ord-ai-n:core:end -->
 #
-# Place them by hand once, where the block should sit; this script never guesses a placement.
+# A sync adds them if AGENTS.md has neither: before the first heading after the title, or at
+# the end. Move them if the block belongs elsewhere; later syncs leave them where they are.
 # Repo-specific values go in AGENTS.md's Bindings section, never in ai/: edits there fail
 # --check and are overwritten by the next sync. See ai/README.md.
 
@@ -37,12 +40,16 @@ usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 # The file paths a manifest lists, one per line.
 listed() { grep -v '^#' "$1" | sed 's/^[0-9a-f]*  //' || true; }
-# Placeholders the Bindings skeleton in ai/INSTALL.md asks every repository to bind.
-skeleton_placeholders() {
+# The Bindings skeleton in ai/INSTALL.md: what follows its heading, up to the closing fence.
+skeleton() {
   [ -f "$1" ] || return 0
   # shellcheck disable=SC2016  # the backticks are literal Markdown, not expansions
-  awk '/^## Bindings$/{s=1; next} s && /^```/{exit} s' "$1" |
-    grep -o '^| `<[a-z0-9-]*>`' | sed 's/^| `//; s/`$//' | sort -u || true
+  awk '/^## Bindings$/{s=1; next} s && /^```/{exit} s' "$1"
+}
+# Placeholders that skeleton asks every repository to bind.
+skeleton_placeholders() {
+  # shellcheck disable=SC2016  # the backticks are literal Markdown, not expansions
+  skeleton "$1" | grep -o '^| `<[a-z0-9-]*>`' | sed 's/^| `//; s/`$//' | sort -u || true
 }
 # Of those, the ones AGENTS.md never mentions after the core block, i.e. in its Bindings.
 unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
@@ -57,6 +64,56 @@ unfilled() {  # $1 = AGENTS.md, $2 = line of the end marker
     NR <= from { next }
     /^#+[ \t]/ { s = ($0 ~ /^#+[ \t]+Bindings([ \t\r]|$)/); next }
     s && /^\|/ && $3 ~ /^[ \t]*(TODO|$)/ { print $2 }' "$1" | sed 's/^ *//; s/ *$//'
+}
+# Give AGENTS.md what a sync needs: create it if it is missing, and add the markers if it has
+# neither. Markers that differ only by surrounding whitespace are straightened. Anything else
+# is left for locate_markers to refuse.
+place_markers() {
+  local counts content
+  if [ ! -f "$agents" ]; then
+    printf '# AGENTS.md\n\n%s\n%s\n' "$BEGIN" "$END" >"$agents"
+    return 0
+  fi
+  counts=$(awk -v b="$BEGIN" -v e="$END" '
+    { t = $0; gsub(/^[ \t]+|[ \t\r]+$/, "", t); if (t == b) nb++; if (t == e) ne++ }
+    END { print nb + 0, ne + 0 }' "$agents")
+  case "$counts" in
+    "1 1")
+      content=$(awk -v b="$BEGIN" -v e="$END" '
+        { t = $0; gsub(/^[ \t]+|[ \t\r]+$/, "", t); if (t == b || t == e) print t; else print }
+      ' "$agents") ;;
+    "0 0")
+      # Before the first heading that isn't the opening title; "# x" in a code fence is no heading.
+      content=$(awk -v b="$BEGIN" -v e="$END" '
+        function put() { if (prev != "") print ""; print b; print e }
+        /^[ \t]*(```|~~~)/ { fence = !fence }
+        !fence && /^#+[ \t]/ {
+          if (!done && (seen || !/^#[ \t]/)) { put(); print ""; done = 1 }
+          seen = 1
+        }
+        { print; prev = $0 }
+        END { if (!done) put() }' "$agents") ;;
+    *) return 0 ;;
+  esac
+  # Write through the existing file to keep its permissions.
+  [ "$content" = "$(cat "$agents")" ] || printf '%s\n' "$content" >"$agents"
+}
+# Find the two markers, which must be exact, single and in order.
+locate_markers() {
+  [ -f "$agents" ] || die "$agents not found: the kit is not installed here (ai/INSTALL.md)"
+  n_begin=$(grep -cxF "$BEGIN" "$agents" || true)
+  n_end=$(grep -cxF "$END" "$agents" || true)
+  [ "$n_begin" = 1 ] && [ "$n_end" = 1 ] ||
+    die "$agents needs exactly one '$BEGIN' line and one '$END' line, unindented (found $n_begin and $n_end)"
+  begin_line=$(grep -nxF "$BEGIN" "$agents" | cut -d: -f1)
+  end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
+  [ "$begin_line" -lt "$end_line" ] || die "the begin marker must come before the end marker in $agents"
+}
+# Whether AGENTS.md has a Bindings section outside the core block.
+has_bindings() {
+  awk -v b="$begin_line" -v e="$end_line" '
+    (NR < b || NR > e) && /^#+[ \t]+Bindings([ \t\r]|$)/ { found = 1 }
+    END { exit !found }' "$agents"
 }
 
 check=0
@@ -77,16 +134,8 @@ kit_root=$(dirname "$kit_ai")
 target=$(cd "$1" 2>/dev/null && pwd -P) || die "no such directory: $1"
 agents="$target/AGENTS.md"
 
-[ -f "$agents" ] || die "$agents not found: create it with a title and the two marker lines (ai/README.md)"
-n_begin=$(grep -cxF "$BEGIN" "$agents" || true)
-n_end=$(grep -cxF "$END" "$agents" || true)
-[ "$n_begin" = 1 ] && [ "$n_end" = 1 ] ||
-  die "$agents needs exactly one '$BEGIN' line and one '$END' line (found $n_begin and $n_end)"
-begin_line=$(grep -nxF "$BEGIN" "$agents" | cut -d: -f1)
-end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
-[ "$begin_line" -lt "$end_line" ] || die "the begin marker must come before the end marker in $agents"
-
 if [ "$check" = 1 ]; then
+  locate_markers
   cd "$target"
   [ -f ai/CORE.md ] || die "$target/ai/CORE.md not found: the kit is not vendored here"
   status=0
@@ -100,13 +149,13 @@ if [ "$check" = 1 ]; then
   fi
   missing=$(unbound AGENTS.md ai/INSTALL.md "$end_line")
   if [ -n "$missing" ]; then
-    echo "sync: AGENTS.md's Bindings have no row for (see ai/INSTALL.md step 4):" >&2
+    echo "sync: AGENTS.md's Bindings have no row for (see ai/INSTALL.md step 3):" >&2
     echo "$missing" | sed 's/^/  /' >&2
     unfinished=1
   fi
   todo=$(unfilled AGENTS.md "$end_line")
   if [ -n "$todo" ]; then
-    echo "sync: AGENTS.md's Bindings still have rows to fill in (see ai/INSTALL.md step 4):" >&2
+    echo "sync: AGENTS.md's Bindings still have rows to fill in (see ai/INSTALL.md step 3):" >&2
     echo "$todo" | sed 's/^/  /' >&2
     unfinished=1
   fi
@@ -164,6 +213,15 @@ fi
 version=${ORD_AI_N_SOURCE:-$version}
 [ -n "$files" ] || die "no kit files found under $kit_ai"
 
+# Past every refusal: nothing above has written to the target.
+place_markers
+locate_markers
+bindings=
+if ! has_bindings; then
+  bindings=$(skeleton "$kit_ai/INSTALL.md")
+  [ -n "$bindings" ] || die "no Bindings skeleton in $kit_ai/INSTALL.md"
+fi
+
 if [ "$target" != "$kit_root" ]; then
   if [ -f "$target/$MANIFEST" ]; then
     # Drop files an earlier sync copied that the kit no longer ships.
@@ -191,7 +249,13 @@ trap 'rm -f "$tmp"' EXIT
 {
   head -n "$begin_line" "$agents"
   cat "$kit_ai/CORE.md"
-  tail -n "+$end_line" "$agents"
+  sed -n "${end_line}p" "$agents"
+  if [ -n "$bindings" ]; then
+    printf '\n## Bindings\n%s\n' "$bindings"
+    # Keep text that follows the end marker directly out of the table.
+    [ -z "$(sed -n "$((end_line + 1))p" "$agents")" ] || echo
+  fi
+  tail -n "+$((end_line + 1))" "$agents"
 } >"$tmp"
 cat "$tmp" >"$agents"
 
@@ -199,7 +263,7 @@ echo "sync: $target now carries $version"
 end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
 missing=$(unbound "$agents" "$target/ai/INSTALL.md" "$end_line")
 if [ -n "$missing" ]; then
-  echo "sync: add Bindings rows for these, or --check fails (ai/INSTALL.md step 4):" >&2
+  echo "sync: add Bindings rows for these, or --check fails (ai/INSTALL.md step 3):" >&2
   echo "$missing" | sed 's/^/  /' >&2
 fi
 case "$version" in

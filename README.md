@@ -9,42 +9,33 @@ and works with any coding agent, harness or model.
 
 You need `bash`, `curl`, `tar` and `git`. No GitHub account or token.
 
-Work on a new branch, from the root of the repository you're adopting it in.
+On a new branch, from the root of the repository you're adopting it in:
 
-1. **Mark where the rules go.** In `AGENTS.md` (create it with a `# AGENTS.md`
-   title if it's missing), add these two lines:
+```sh
+curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
+```
 
-   ```
-   <!-- ord-ai-n:core:begin -->
-   <!-- ord-ai-n:core:end -->
-   ```
+It downloads the kit at one exact commit, copies it to `ai/`, records the version
+in `ai/.kit-manifest`, and writes the core rules and a `## Bindings` table into
+`AGENTS.md`, creating the file if it's missing. It changes nothing else, and it
+refuses to overwrite an `ai/` it didn't create or one with uncommitted changes.
 
-2. **Run the installer:**
+What's left takes someone who knows the repository:
 
-   ```sh
-   curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
-   ```
+1. **Fill in the Bindings.** The table maps the kit's rules onto your repository.
+   Replace every `TODO`; `none: <why>` is a valid value, a blank is not.
+   [`ai/INSTALL.md`](ai/INSTALL.md#3-fill-in-the-bindings) says how.
 
-   It downloads the kit at one exact commit, copies it to `ai/`, records the
-   version in `ai/.kit-manifest`, and writes the core rules between the markers.
-   It changes nothing else, and it refuses to overwrite an `ai/` it didn't
-   create or one with uncommitted changes.
-
-3. **Write the Bindings.** Directly after the end marker, add the `## Bindings`
-   table from [`ai/INSTALL.md`](ai/INSTALL.md#4-write-the-bindings), which maps
-   the kit's rules onto your repository. Fill every row; `none: <why>` is a valid
-   value, a blank is not.
-
-4. **Point your other tools at it.** Most coding agents read `AGENTS.md` by
+2. **Point your other tools at it.** Most coding agents read `AGENTS.md` by
    themselves. Some don't, or stop once their own file exists, and then the rules
    are silently inactive. [`ai/providers.md`](ai/providers.md#wire-the-entrypoints)
    says what to add, per tool.
 
-5. **Check and commit:**
+3. **Check and commit:**
 
    ```sh
    ai/sync.sh --check .
-   git add ai AGENTS.md   # plus any entrypoint files from step 4
+   git add ai AGENTS.md   # plus any entrypoint files from step 2
    git commit
    ```
 
@@ -57,9 +48,8 @@ bash /tmp/install.sh
 
 [`ai/INSTALL.md`](ai/INSTALL.md) has the full procedure: worktree layouts,
 installer options such as pinning a version with `--ref`, opening the pull
-request, and removing the kit. To hand the
-adoption to an agent instead, paste the prompt in
-[§ Adopting with an agent](ai/INSTALL.md#adopting-with-an-agent).
+request, and removing the kit. To hand the adoption to an agent instead, paste
+the prompt in [§ Adopting with an agent](ai/INSTALL.md#adopting-with-an-agent).
 
 ## Update
 
