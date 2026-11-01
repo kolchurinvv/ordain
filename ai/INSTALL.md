@@ -9,10 +9,11 @@ is shaped this way: `README.md` § Adopt it in a repository.
 writes the core rules into `AGENTS.md`, creating the file if it's missing.
 Nothing else, and it leaves git alone. The rules sit between two marker lines. If
 the file has neither, the installer adds them before the first heading after the
-title, or at the end; move them if the rules belong elsewhere, and later runs keep
-them there. If the file has no `## Bindings` section, it adds one after the rules.
-It refuses to overwrite an `ai/` directory it didn't create, or one with
-uncommitted changes.
+title, or at the end; move them if the rules belong elsewhere, as long as they
+stay above the Bindings, and later runs keep them there. If the file has no
+Bindings section, it adds one after the rules. It refuses to overwrite an `ai/`
+directory it didn't create, or one with uncommitted edits, and to create
+`AGENTS.md` anywhere but the root of a git repository.
 
 **What it ships:** `ai/` only. The kit repository's `lessons/` directory is an
 inbox of candidate rules, and nothing in it reaches your repository. A lesson
@@ -84,7 +85,7 @@ Options go after `bash -s --`:
 | Option | Does |
 |---|---|
 | `--ref <tag-or-sha>` | Install a specific kit version instead of `main`. |
-| `--force` | Overwrite an existing `ai/` the installer didn't create. Only when you mean to replace it. |
+| `--force` | Overwrite an existing `ai/` the installer didn't create, or create `AGENTS.md` outside a repository's root. Only when you mean to. |
 | `<path>` | Install into that repository instead of the current directory. |
 
 ### 3. Fill in the Bindings
@@ -138,8 +139,9 @@ the repository's contributors actually use, make its entrypoint import
 
 ### 5. Check, commit, open the PR
 
-The installer ran the check when it finished. Run it again now that the Bindings
-are filled in:
+The installer ran the check when it finished. Check again now that the Bindings
+are filled in. Re-running the install line does that too, and works before you
+commit:
 
 ```sh
 ai/sync.sh --check .
@@ -240,7 +242,7 @@ Ask me about anything this repository's own documents don't settle: a ticket key
 3. Commit the result on its own. Its diff is exactly what changed in the kit;
    the source line in `ai/.kit-manifest` shows which version you moved to.
 
-If the installer refuses because `ai/` has uncommitted changes, someone edited
+If the installer refuses because `ai/` has uncommitted edits, someone edited
 the kit in place. Move what they meant into Bindings, drop the edit
 (`git checkout -- ai`), and run it again.
 

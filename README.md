@@ -20,7 +20,8 @@ in `ai/.kit-manifest`, and writes the core rules and a `## Bindings` table into
 `AGENTS.md`, creating the file if it's missing. Then it checks the result and names
 any Bindings rows still to fill in. It changes nothing else and leaves git alone,
 so how the change lands is up to you. It refuses to overwrite an `ai/` it didn't
-create or one with uncommitted changes.
+create or one with uncommitted edits, and to create `AGENTS.md` anywhere but a
+repository's root.
 
 What's left takes someone who knows the repository:
 
@@ -33,7 +34,8 @@ What's left takes someone who knows the repository:
    are silently inactive. [`ai/providers.md`](ai/providers.md#wire-the-entrypoints)
    says what to add, per tool.
 
-3. **Check again and commit,** now that the Bindings are filled in:
+3. **Check again and commit,** now that the Bindings are filled in. Re-running the
+   install line checks too:
 
    ```sh
    ai/sync.sh --check .

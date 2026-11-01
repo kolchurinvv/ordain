@@ -26,7 +26,8 @@
 #   <!-- ord-ai-n:core:end -->
 #
 # A sync adds them if AGENTS.md has neither: before the first heading after the title, or at
-# the end. Move them if the block belongs elsewhere; later syncs leave them where they are.
+# the end. Move them if the block belongs elsewhere, as long as it stays above the Bindings;
+# later syncs leave them where they are.
 # Repo-specific values go in AGENTS.md's Bindings section, never in ai/: edits there fail
 # --check and are overwritten by the next sync. See ai/README.md.
 
