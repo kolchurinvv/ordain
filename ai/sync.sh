@@ -14,7 +14,8 @@
 #   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest or
 #                              <repo>/AGENTS.md's core block differs from ai/CORE.md. Exit 3 if
 #                              only the Bindings are unfinished: a placeholder in the skeleton
-#                              (ai/INSTALL.md) has no row, or a row is blank or still says TODO.
+#                              (ai/INSTALL.md) has no row, a row is blank or still says TODO,
+#                              or there are no rows.
 #                              Cheap enough for CI: the drift guard that holds whichever
 #                              agent or model made the change.
 #                              This is the only mode a vendored copy runs.
@@ -64,12 +65,24 @@ unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
     tail -n "+$(($3 + 1))" "$1" | grep -qF "\`$p\`" || echo "$p"
   done
 }
-# Bindings rows still to fill in: their value is blank or starts with the skeleton's TODO.
+# Bindings rows still to fill in: their value is blank or starts with the skeleton's TODO. The
+# section runs to the next heading of its level or higher, and finding no rows is not a pass.
 unfilled() {  # $1 = AGENTS.md, $2 = line of the end marker
   awk -F'|' -v from="$2" '
     NR <= from { next }
-    /^#+[ \t]/ { s = ($0 ~ /^#+[ \t]+Bindings([ \t\r]|$)/); next }
-    s && /^\|/ && $3 ~ /^[ \t]*(TODO|$)/ { print $2 }' "$1" | sed 's/^ *//; s/ *$//'
+    /^[ \t]*(```|~~~)/ { fence = !fence; next }
+    fence { next }
+    /^#+[ \t]/ {
+      match($0, /^#+/)
+      if (level && RLENGTH <= level) level = 0
+      if (!level && tolower($0) ~ /bindings/) level = RLENGTH
+      next
+    }
+    level && /^\|/ && ++table > 2 {
+      rows++
+      if ($3 ~ /^[ \t\r]*(TODO|$)/) print $2
+    }
+    END { if (!rows) print "(no Bindings rows found)" }' "$1" | sed 's/^ *//; s/ *$//'
 }
 # Give AGENTS.md what a sync needs: create it if it is missing, and add the markers if it has
 # neither. Markers that differ only by surrounding whitespace are straightened. Anything else
@@ -120,10 +133,12 @@ locate_markers() {
   end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
   [ "$begin_line" -lt "$end_line" ] || die "the begin marker must come before the end marker in $agents"
 }
-# Whether AGENTS.md has a Bindings section outside the core block.
+# Whether AGENTS.md has a Bindings section outside the core block, whatever it is titled.
 has_bindings() {
   awk -v b="$begin_line" -v e="$end_line" '
-    (NR < b || NR > e) && /^#+[ \t]+Bindings([ \t\r]|$)/ { found = 1 }
+    NR >= b && NR <= e { next }
+    /^[ \t]*(```|~~~)/ { fence = !fence; next }
+    !fence && /^#+[ \t]/ && tolower($0) ~ /bindings/ { found = 1 }
     END { exit !found }' "$agents"
 }
 
