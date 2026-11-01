@@ -6,7 +6,7 @@
 #                              <repo>/ai/.kit-manifest, and regenerate the core block in
 #                              <repo>/AGENTS.md from ai/CORE.md. AGENTS.md is created if it is
 #                              missing, and gets the markers and the Bindings skeleton if it
-#                              lacks them.
+#                              lacks them. Finishes by running --check on the result.
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
 #                              under ai/) unless --force is given.
@@ -260,12 +260,15 @@ trap 'rm -f "$tmp"' EXIT
 cat "$tmp" >"$agents"
 
 echo "sync: $target now carries $version"
-end_line=$(grep -nxF "$END" "$agents" | cut -d: -f1)
-missing=$(unbound "$agents" "$target/ai/INSTALL.md" "$end_line")
-if [ -n "$missing" ]; then
-  echo "sync: add Bindings rows for these, or --check fails (ai/INSTALL.md step 3):" >&2
-  echo "$missing" | sed 's/^/  /' >&2
-fi
+# Verify the result the way CI will, with the copy that now lives in the target. Unfinished
+# Bindings are the expected state after a first install; anything else is a broken sync.
+verified=0
+bash "$target/ai/sync.sh" --check "$target" || verified=$?
+case "$verified" in
+  0) ;;
+  3) echo "sync: the kit is in place; fill in the rows named above, then run ai/sync.sh --check ." ;;
+  *) die "the result failed its own --check" ;;
+esac
 case "$version" in
   *-dirty) echo "sync: the kit has uncommitted changes; commit them and re-sync before committing $target" >&2 ;;
 esac

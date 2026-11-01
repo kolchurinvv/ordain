@@ -61,4 +61,4 @@ fi
 
 [ -f "$tmp/ai/sync.sh" ] || die "$source has no ai/sync.sh; that kit version predates this installer"
 ORD_AI_N_SOURCE=$source bash "$tmp/ai/sync.sh" ${force[@]+"${force[@]}"} "$target"
-echo "install: review the diff, keep AGENTS.md's Bindings current, and commit the result on its own"
+echo "install: point tools that don't read AGENTS.md at it (ai/providers.md), review the diff, and commit the result on its own"

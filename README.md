@@ -17,8 +17,9 @@ curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh 
 
 It downloads the kit at one exact commit, copies it to `ai/`, records the version
 in `ai/.kit-manifest`, and writes the core rules and a `## Bindings` table into
-`AGENTS.md`, creating the file if it's missing. It changes nothing else, and it
-refuses to overwrite an `ai/` it didn't create or one with uncommitted changes.
+`AGENTS.md`, creating the file if it's missing. Then it checks the result and names
+any Bindings rows still to fill in. It changes nothing else, and it refuses to
+overwrite an `ai/` it didn't create or one with uncommitted changes.
 
 What's left takes someone who knows the repository:
 
@@ -31,7 +32,7 @@ What's left takes someone who knows the repository:
    are silently inactive. [`ai/providers.md`](ai/providers.md#wire-the-entrypoints)
    says what to add, per tool.
 
-3. **Check and commit:**
+3. **Check again and commit,** now that the Bindings are filled in:
 
    ```sh
    ai/sync.sh --check .

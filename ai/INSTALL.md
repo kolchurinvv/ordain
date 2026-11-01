@@ -71,7 +71,9 @@ curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh 
 
 It downloads the kit at one exact commit, copies `ai/`, records that commit and
 a hash of every file in `ai/.kit-manifest`, and writes the core rules and a
-Bindings table into `AGENTS.md`.
+Bindings table into `AGENTS.md`. Then it runs `ai/sync.sh --check .` on the
+result. Bindings rows still to fill in are expected at this point, so it names
+them and carries on; any other failure stops the install.
 
 To read the script before running it, download it first:
 `curl -fsSL … -o /tmp/install.sh`, read it, then `bash /tmp/install.sh`.
@@ -134,6 +136,9 @@ the repository's contributors actually use, make its entrypoint import
 `AGENTS.md` rather than copy it. `providers.md` says how, per tool.
 
 ### 5. Check, commit, open the PR
+
+The installer ran the check when it finished. Run it again now that the Bindings
+are filled in:
 
 ```sh
 ai/sync.sh --check .
