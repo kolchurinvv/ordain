@@ -9,7 +9,8 @@
 #                              lacks them. Finishes by running --check on the result.
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
-#                              under ai/) unless --force is given.
+#                              under ai/), or to create AGENTS.md outside a repository's root,
+#                              unless --force is given.
 #   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest or
 #                              <repo>/AGENTS.md's core block differs from ai/CORE.md. Exit 3 if
 #                              only the Bindings are unfinished: a placeholder in the skeleton
@@ -97,6 +98,11 @@ place_markers() {
   esac
   # Write through the existing file to keep its permissions.
   [ "$content" = "$(cat "$agents")" ] || printf '%s\n' "$content" >"$agents"
+}
+# Whether the target is the root of a git working tree.
+at_repo_root() {
+  [ "$(git -C "$target" rev-parse --is-inside-work-tree 2>/dev/null)" = true ] &&
+    [ -z "$(git -C "$target" rev-parse --show-prefix)" ]
 }
 # Find the two markers, which must be exact, single and in order.
 locate_markers() {
@@ -194,6 +200,9 @@ fi
 [ ! -f "$kit_root/$MANIFEST" ] ||
   die "$kit_ai is a vendored copy; it only runs --check. Sync from an ord-ai-n checkout."
 if [ "$target" != "$kit_root" ] && [ "$force" = 0 ]; then
+  # With no AGENTS.md to find, nothing else would stop a run from the wrong directory.
+  [ -f "$agents" ] || at_repo_root ||
+    die "$target isn't the root of a git repository, so AGENTS.md won't be created here. Run this from the root, or pass --force."
   [ ! -d "$target/ai" ] || [ -f "$target/$MANIFEST" ] ||
     die "$target/ai exists but sync.sh didn't write it, and syncing would overwrite it. Move it, or pass --force."
   if [ -d "$target/ai" ] && git -C "$target" rev-parse --git-dir >/dev/null 2>&1 &&
