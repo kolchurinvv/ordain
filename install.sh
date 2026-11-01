@@ -8,13 +8,11 @@
 # own ai/sync.sh does the work, so the repo's ai/.kit-manifest records exactly what was
 # installed (github.com/<owner>/<name>@<sha>). Re-run the same line to update.
 #
-# While the kit repo is private, authenticate the first download too:
-#   curl -fsSL -H "Authorization: Bearer $(gh auth token)" .../install.sh | bash
-# This script then authenticates with $GITHUB_TOKEN, or `gh auth token` when gh is logged in.
+# The kit repo is public, so this script reads it anonymously and never sends a credential.
 #
-# ORD_AI_N_REPO=<owner>/<name>  install from a fork (default kolchurinvv/ordain).
+# ORD_AI_N_REPO=<owner>/<name>  install from a public fork (default kolchurinvv/ordain).
 # ORD_AI_N_TARBALL=<url>        install from that .tar.gz instead: a mirror, or file:// to test
-#                               a local build. No token is sent to it; the manifest records it.
+#                               a local build. The manifest records it.
 
 set -euo pipefail
 
@@ -50,19 +48,12 @@ if [ -n "${ORD_AI_N_TARBALL:-}" ]; then
   curl -fsSL "$source" | tar -xzf - -C "$tmp" --strip-components=1 ||
     die "cannot download or unpack $source"
 else
-  token=${GITHUB_TOKEN:-}
-  if [ -z "$token" ] && command -v gh >/dev/null 2>&1; then
-    token=$(gh auth token 2>/dev/null || true)
-  fi
-  auth=()
-  [ -z "$token" ] || auth=(-H "Authorization: Bearer $token")
   # Pin the ref to a commit first, so the files and the recorded version can't disagree.
-  sha=$(curl -fsSL ${auth[@]+"${auth[@]}"} -H "Accept: application/vnd.github.sha" \
+  sha=$(curl -fsSL -H "Accept: application/vnd.github.sha" \
           "https://api.github.com/repos/$repo/commits/$ref") ||
-    die "cannot resolve '$ref' in github.com/$repo (private? set GITHUB_TOKEN or run gh auth login)"
+    die "cannot resolve '$ref' in github.com/$repo (wrong ref or repo, or GitHub's API rate limit)"
   source="github.com/$repo@$sha"
-  # GitHub answers with a redirect to a pre-signed URL; curl drops the token at that hop.
-  curl -fsSL ${auth[@]+"${auth[@]}"} "https://api.github.com/repos/$repo/tarball/$sha" |
+  curl -fsSL "https://api.github.com/repos/$repo/tarball/$sha" |
     tar -xzf - -C "$tmp" --strip-components=1 ||
     die "cannot download or unpack $source"
 fi
