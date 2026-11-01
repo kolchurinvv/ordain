@@ -14,8 +14,8 @@ uncommitted changes.
 inbox of candidate rules, and nothing in it reaches your repository. A lesson
 arrives only after it is promoted into an `ai/` module, with your next update.
 
-**You need:** `bash`, `curl`, `tar`, `git`. While the kit repository is
-private, you also need read access to `kolchurinvv/ordain` and `gh auth login`.
+**You need:** `bash`, `curl`, `tar`, `git`. The kit repository is public, so no
+GitHub account or token.
 
 To hand the whole adoption to an agent instead, use the prompt in § Adopting
 with an agent.
@@ -75,11 +75,6 @@ The installer fills the space between them and never guesses where to put it.
 From the repository's root:
 
 ```sh
-# while the kit repository is private
-curl -fsSL -H "Authorization: Bearer $(gh auth token)" \
-  https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
-
-# once it is public
 curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
 ```
 
@@ -183,8 +178,8 @@ Open the pull request the way the repository usually does. Its body says:
 - how to update the kit (§ Update).
 
 Then, as a separate change, make CI fail when someone edits the kit in place.
-Do this once the kit repository is public, so whoever maintains the repository
-can see where a fix belongs. GitHub Actions:
+The kit repository is public, so whoever maintains the repository can see where
+a fix belongs. GitHub Actions:
 
 ```yaml
   agent-contract:
@@ -230,7 +225,6 @@ Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how A
 
 3. Run the installer from the repository root:
        curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
-   While the kit repository is private, add -H "Authorization: Bearer $(gh auth token)" to that curl.
 
 4. From here on, follow ai/INSTALL.md, which is now in the repository, from Install step 4 to the end of step 6. It is the procedure; this message only adds emphasis:
    - Bindings: find every value in the repository itself. State gaps instead of fixing them. Where the repository has its own governing documents (a constitution, CONTRIBUTING, decision records), they win over the kit. Say so in the Bindings, and follow them for branch names, commit messages, and what must pass before a pull request.
