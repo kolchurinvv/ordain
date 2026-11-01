@@ -121,7 +121,7 @@ rather than staying silent.
 | `<base>` branch | `main` |
 | Commit / branch convention | Conventional Commits (`ai/01`); branches `<type>/<short-slug>`. |
 | Decision records | None yet; decisions come from the user. |
-| Status doc (rule 5) | None yet (no root `README.md`); `ai/README.md` describes the kit. |
+| Status doc (rule 5) | Root `README.md` (what the kit is, how to install it); `ai/README.md` describes the kit's contents. |
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
 | `<read-back>` (`ai/10`) | none: the kit stores nothing and has no tests yet. |
 | `<floors>` (`ai/11`) | none: nothing is measured yet (no tests, no linted code beyond two shell scripts). |
