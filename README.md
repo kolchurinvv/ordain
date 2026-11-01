@@ -9,7 +9,7 @@ and works with any coding agent, harness or model.
 
 You need `bash`, `curl`, `tar` and `git`. No GitHub account or token.
 
-On a new branch, from the root of the repository you're adopting it in:
+From the root of the repository you're adopting it in:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
@@ -18,8 +18,9 @@ curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh 
 It downloads the kit at one exact commit, copies it to `ai/`, records the version
 in `ai/.kit-manifest`, and writes the core rules and a `## Bindings` table into
 `AGENTS.md`, creating the file if it's missing. Then it checks the result and names
-any Bindings rows still to fill in. It changes nothing else, and it refuses to
-overwrite an `ai/` it didn't create or one with uncommitted changes.
+any Bindings rows still to fill in. It changes nothing else and leaves git alone,
+so how the change lands is up to you. It refuses to overwrite an `ai/` it didn't
+create or one with uncommitted changes.
 
 What's left takes someone who knows the repository:
 
@@ -54,8 +55,8 @@ the prompt in [§ Adopting with an agent](ai/INSTALL.md#adopting-with-an-agent).
 
 ## Update
 
-On a new branch, re-run the install line and commit the result on its own. Its
-diff is exactly what changed in the kit.
+Re-run the install line and commit the result on its own. Its diff is exactly what
+changed in the kit.
 
 ## What's in the kit
 

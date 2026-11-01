@@ -1,9 +1,9 @@
 # Install, update or remove the kit
 
 Step by step, for a repository that already has code, history and other people
-working in it. Adopting the kit is a change like any other: it goes on its own
-branch and through the repository's normal review. Why it is shaped this way:
-`README.md` § Adopt it in a repository.
+working in it. The installer creates the documents and leaves git alone: no branch
+and no commit. How the change lands is up to the repository's maintainers. Why it
+is shaped this way: `README.md` § Adopt it in a repository.
 
 **What the installer touches:** it adds `ai/` (including `ai/.kit-manifest`) and
 writes the core rules into `AGENTS.md`, creating the file if it's missing.
@@ -26,11 +26,12 @@ with an agent.
 
 ## Install
 
-### 1. Branch first
+### 1. Decide how the change lands
 
-Never adopt on the default branch. Name the branch the way the repository
-names branches (a ticket key, a type prefix); `add-agent-contract` below is a
-placeholder.
+The installer works on whatever is checked out. Where the repository takes
+changes through a branch and review, start the branch first, named the way the
+repository names branches (a ticket key, a type prefix); `add-agent-contract`
+below is a placeholder.
 
 **A normal clone:**
 
@@ -212,9 +213,9 @@ itself, because the kit isn't in the repository yet, and hands over to this file
 from step 3 on.
 
 ```text
-Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how AI agents work here, whatever the tool or model. The result is a pull request into the default branch for the maintainers to review. Read this whole message before doing anything.
+Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how AI agents work here, whatever the tool or model. The result is a change for the maintainers to review, landed the way this repository lands changes. Read this whole message before doing anything.
 
-1. Branch first. Never work on the default branch, and name the branch the way this repository names branches. If the repository keeps one worktree per branch, add a worktree instead of switching branches in an existing one.
+1. Land this the way this repository lands changes; if its documents don't say, ask me. Where that means a branch, name it the way this repository names branches. If the repository keeps one worktree per branch, add a worktree instead of switching branches in an existing one.
 
 2. Run the installer from the repository root:
        curl -fsSL https://raw.githubusercontent.com/kolchurinvv/ordain/main/install.sh | bash
@@ -227,14 +228,14 @@ Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how A
    - One concern per pull request. Changes to tools the maintainers already run go in a separate pull request.
    - After the pull request is open, list every gap the Bindings state and offer to open one issue per gap (ai/INSTALL.md step 6). Open them only when I agree.
 
-4. Commit as you go, one concern per commit, in the repository's format. Show me the branch, the commits and the pull request text. Push and open it only when I say so. Then watch its CI to a green conclusion on the pull request's head commit, job by job, and report.
+4. Commit as you go, one concern per commit, in the repository's format. Show me the commits, and any branch and pull request text. Push and open a pull request only when I say so. Then watch its CI to a green conclusion on the pushed head commit, job by job, and report.
 
 Ask me about anything this repository's own documents don't settle: a ticket key, which coding tools contributors use, what may run locally.
 ```
 
 ## Update
 
-1. Branch first, as in Install step 1.
+1. Decide how the change lands, as in Install step 1.
 2. Re-run the install line from step 2.
 3. Commit the result on its own. Its diff is exactly what changed in the kit;
    the source line in `ai/.kit-manifest` shows which version you moved to.
