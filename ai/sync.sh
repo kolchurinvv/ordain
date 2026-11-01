@@ -41,6 +41,11 @@ usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 # The file paths a manifest lists, one per line.
 listed() { grep -v '^#' "$1" | sed 's/^[0-9a-f]*  //' || true; }
+# Whether every file the target's manifest lists is byte for byte what was installed.
+matches_manifest() {
+  [ -f "$target/$MANIFEST" ] &&
+    (cd "$target" && grep -v '^#' "$MANIFEST" | sha -c --quiet - >/dev/null 2>&1)
+}
 # The Bindings skeleton in ai/INSTALL.md: what follows its heading, up to the closing fence.
 skeleton() {
   [ -f "$1" ] || return 0
@@ -206,8 +211,8 @@ if [ "$target" != "$kit_root" ] && [ "$force" = 0 ]; then
   [ ! -d "$target/ai" ] || [ -f "$target/$MANIFEST" ] ||
     die "$target/ai exists but sync.sh didn't write it, and syncing would overwrite it. Move it, or pass --force."
   if [ -d "$target/ai" ] && git -C "$target" rev-parse --git-dir >/dev/null 2>&1 &&
-     [ -n "$(git -C "$target" status --porcelain -- ai)" ]; then
-    die "$target/ai has uncommitted changes that syncing would overwrite. Commit or drop them, or pass --force."
+     [ -n "$(git -C "$target" status --porcelain -- ai)" ] && ! matches_manifest; then
+    die "$target/ai has uncommitted edits that syncing would overwrite. Commit or drop them, or pass --force."
   fi
 fi
 
