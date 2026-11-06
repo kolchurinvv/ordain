@@ -242,6 +242,19 @@ Ask me about anything this repository's own documents don't settle: a ticket key
 2. Re-run the install line from step 2.
 3. Commit the result on its own. Its diff is exactly what changed in the kit;
    the source line in `ai/.kit-manifest` shows which version you moved to.
+4. **Reconcile the amendments it listed.** Each one is a rule that now asks
+   agents for something different (`AMENDMENTS.md`), and `ai/sync.sh --check`
+   keeps exiting 3, listing them, until they're reconciled. CI that runs the
+   check stays red meanwhile. The update can't reach text this repository wrote,
+   so read each entry and fix what it names under **Check outside `ai/`**: a
+   Bindings row, a review skill or command, a copied agent definition, a
+   template that restates the old rule. To keep the old behavior instead, say
+   so in the Bindings. Then set the `Amendments reconciled` row to the number
+   the check names (a repository installed before the row existed adds it).
+   Commit that separately, naming the amendments it answers, in the same pull
+   request as the update.
+5. **Tell the agents that are already running,** or restart them. A session
+   keeps the rules it read when it started.
 
 If the installer refuses because `ai/` has uncommitted edits, someone edited
 the kit in place. Move what they meant into Bindings, drop the edit
