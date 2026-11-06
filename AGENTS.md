@@ -110,6 +110,15 @@ names this repository's). Nothing else — do not infer choices from sibling rep
 prior conventions, or training priors. If the decision records are silent, ask
 the user. This block governs *how* you work; the decision records govern *what*
 you build.
+
+### `ai/` is the kit's
+
+The installer writes `ai/`, and every update replaces it. Never add, edit,
+rename or delete a file there, and never edit `ai/.kit-manifest` to make the
+check pass: an update may overwrite or delete whatever the kit didn't ship. This
+repository's own docs (runbooks, specs, test plans, checklists) go where
+`<project-docs>` says, named the way this repository names things rather than
+after the kit's numbered modules. See `ai/06`.
 <!-- ord-ai-n:core:end -->
 
 ## Bindings
@@ -123,6 +132,7 @@ rather than staying silent.
 | `<base>` branch | `main` |
 | Commit / branch convention | Conventional Commits (`ai/01`); branches `<type>/<short-slug>`. Every change reaches `main` through a pull request and is squash-merged, CI or not; nothing is pushed to `main` directly (owner's ruling). A squash makes each PR one commit on `main`, so one concern per PR, with a step-by-step commit series inside it. The PR title becomes that commit's subject, so it is a Conventional Commit too. |
 | Decision records | None yet; decisions come from the user. |
+| `<project-docs>` (`ai/06`) | Here `ai/` is the kit's source, changed through pull requests (§ Developing the kit). The kit's own docs are the root `README.md` and `ai/README.md`; `lessons/` is the inbox for candidate rules. No `docs/` yet. |
 | Status doc (rule 5) | Root `README.md` (what the kit is, how to install it); `ai/README.md` describes the kit's contents. |
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
 | `<read-back>` (`ai/10`) | none: the kit stores nothing and has no tests yet. |
@@ -132,7 +142,7 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Limited. Agents commit on a branch, push it and open its pull request without asking, and may rebase and force-push their own open PR branch (`--force-with-lease`), as stacked PRs need after a squash merge. Merging is the owner's call. Everything else outward-facing (tags, releases, issues, repository settings, rewriting `main` or anyone else's branch, anything sent to another repository) is propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
-| Amendments reconciled | Through A1. This repository writes them; raise this with each new entry, once this file agrees with it. |
+| Amendments reconciled | Through A2. This repository writes them; raise this with each new entry, once this file agrees with it. |
 
 ## Developing the kit
 

@@ -255,8 +255,10 @@ if [ "$check" = 1 ]; then
     fi
     extra=$(comm -13 <(listed "$MANIFEST" | sort) <(echo "$present" | sort) | grep . || true)
     if [ -n "$extra" ]; then
-      echo "sync: files under ai/ that the kit does not ship (repo-specific files belong outside ai/):" >&2
+      echo "sync: files under ai/ that the kit does not ship:" >&2
       echo "$extra" | sed 's/^/  /' >&2
+      echo "      ai/ is the kit's, and an update replaces it. Move them where the Bindings' <project-docs>" >&2
+      echo "      row says (ai/06). Don't list them in $MANIFEST: only the installer writes it." >&2
       status=1
     fi
   fi

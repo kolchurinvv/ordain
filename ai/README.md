@@ -69,9 +69,11 @@ Two rules shape every step:
   a commit convention, its own review skill), the host's documents win over the
   kit's defaults. Bindings say so, and the host's existing tools point at the
   matching module instead of a parallel one.
-- **Never edit the kit in place.** Every update overwrites `ai/` and the block,
-  and `sync.sh --check` fails on in-place edits. Repo-specific values go in
-  Bindings; changes to the kit itself go to ord-ai-n.
+- **Never edit the kit in place, or add to it.** Every update overwrites `ai/`
+  and the block, and `sync.sh --check` fails on in-place edits and on files the
+  kit doesn't ship. Repo-specific values go in Bindings, and the repository's own
+  docs where its `<project-docs>` row says; changes to the kit itself go to
+  ord-ai-n.
 
 The kit must live at `ai/` in the host, because its modules cite each other by
 that path. When developing the kit itself, run `ai/sync.sh <host-repo>` from a
