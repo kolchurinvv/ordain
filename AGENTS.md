@@ -119,7 +119,7 @@ rather than staying silent.
 |---|---|
 | `<gate-command>` | **None yet.** The only verification is `nix flake check` plus `ai/sync.sh --check .`; say so rather than claiming a gate ran. |
 | `<base>` branch | `main` |
-| Commit / branch convention | Conventional Commits (`ai/01`); branches `<type>/<short-slug>`. |
+| Commit / branch convention | Conventional Commits (`ai/01`); branches `<type>/<short-slug>`. Every change reaches `main` through a pull request and is squash-merged, CI or not; nothing is pushed to `main` directly (owner's ruling). A squash makes each PR one commit on `main`, so one concern per PR, with a step-by-step commit series inside it. The PR title becomes that commit's subject, so it is a Conventional Commit too. |
 | Decision records | None yet; decisions come from the user. |
 | Status doc (rule 5) | Root `README.md` (what the kit is, how to install it); `ai/README.md` describes the kit's contents. |
 | Generated baselines (rule 3) | `flake.lock` — update only on request, in its own commit. |
@@ -128,7 +128,7 @@ rather than staying silent.
 | `<exemptions>` (`ai/11`) | none: no gate takes exemptions. |
 | `<static-checks>` (`ai/12`) | Partial: `shellcheck` on `ai/sync.sh` and `install.sh`, run by hand, not yet a gate. |
 | Memory root | Harness-local only; no tracked memory root. |
-| Autonomy | Not granted: propose-then-act. |
+| Autonomy | Limited. Agents commit on a branch, push it and open its pull request without asking, and may rebase and force-push their own open PR branch (`--force-with-lease`), as stacked PRs need after a squash merge. Merging is the owner's call. Everything else outward-facing (tags, releases, issues, repository settings, rewriting `main` or anyone else's branch, anything sent to another repository) is propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
 
 ## Developing the kit
