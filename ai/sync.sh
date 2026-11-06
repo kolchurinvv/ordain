@@ -15,7 +15,9 @@
 #                              <repo>/AGENTS.md's core block differs from ai/CORE.md. Exit 3 if
 #                              only the Bindings are unfinished: a placeholder in the skeleton
 #                              (ai/INSTALL.md) has no row, a row is blank or still says TODO,
-#                              or there are no rows.
+#                              or there are no rows; or ai/AMENDMENTS.md has entries newer than
+#                              the Bindings row "Amendments reconciled | Through A<n>" (or there
+#                              is no such row), which an update leaves for the repo to reconcile.
 #                              Cheap enough for CI: the drift guard that holds whichever
 #                              agent or model made the change.
 #                              This is the only mode a vendored copy runs.
@@ -37,6 +39,7 @@ export LC_ALL=C
 BEGIN='<!-- ord-ai-n:core:begin -->'
 END='<!-- ord-ai-n:core:end -->'
 MANIFEST=ai/.kit-manifest
+AMENDMENTS=ai/AMENDMENTS.md
 
 die() { echo "sync: $*" >&2; exit 1; }
 usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
@@ -144,6 +147,28 @@ has_bindings() {
     !fence && /^#+[ \t]/ && tolower($0) ~ /bindings/ { found = 1 }
     END { exit !found }' "$agents"
 }
+# The highest entry number in an amendments log ("## A<n> " headings); 0 if it has none.
+latest_amendment() {
+  [ -f "$1" ] || { echo 0; return 0; }
+  awk '/^## A[0-9]+ / { n = substr($2, 2) + 0; if (n > m) m = n } END { print m + 0 }' "$1"
+}
+# The entries numbered above $2, one "A<n> (<date>): <rule>" line each, newest first.
+amendments_after() {  # $1 = the amendments log, $2 = the number reconciled through
+  [ ! -f "$1" ] ||
+    awk -v n="$2" '/^## A[0-9]+ / { if (substr($2, 2) + 0 > n) print substr($0, 4) }' "$1"
+}
+# The number in the "Amendments reconciled" Bindings row (its first A<n>); "none" if the row
+# names no number, and nothing if there is no such row.
+reconciled_through() {  # $1 = AGENTS.md, $2 = line of the end marker
+  awk -F'|' -v from="$2" '
+    NR <= from { next }
+    /^[ \t]*(```|~~~)/ { fence = !fence; next }
+    fence { next }
+    /^\|/ && tolower($2) ~ /amendments reconciled/ {
+      if (match($3, /A[0-9]+/)) print substr($3, RSTART + 1, RLENGTH - 1) + 0; else print "none"
+      exit
+    }' "$1"
+}
 
 check=0
 force=0
@@ -187,6 +212,25 @@ if [ "$check" = 1 ]; then
     echo "sync: AGENTS.md's Bindings still have rows to fill in (see ai/INSTALL.md step 3):" >&2
     echo "$todo" | sed 's/^/  /' >&2
     unfinished=1
+  fi
+  # Rule changes an update brought that the repository's own text may still contradict. They
+  # hold the check, like an unfilled row, until the Bindings say they are reconciled.
+  latest=$(latest_amendment "$AMENDMENTS")
+  if [ "$latest" -gt 0 ]; then
+    through=$(reconciled_through AGENTS.md "$end_line")
+    case "$through" in
+      "") echo "sync: AGENTS.md's Bindings have no 'Amendments reconciled' row, so every amendment counts." >&2
+          through=0 ;;
+      none) echo "sync: AGENTS.md's 'Amendments reconciled' row names no A<number>, so every amendment counts." >&2
+          through=0 ;;
+    esac
+    if [ "$through" -lt "$latest" ]; then
+      echo "sync: rules the kit changed that this repository hasn't reconciled yet ($AMENDMENTS):" >&2
+      amendments_after "$AMENDMENTS" "$through" | while IFS= read -r entry; do echo "  $entry"; done >&2
+      echo "      Fix what each entry lists under 'Check outside ai/' (ai/INSTALL.md § Update), then set" >&2
+      echo "      the Bindings row to: | Amendments reconciled | Through A$latest |" >&2
+      unfinished=1
+    fi
   fi
   # The kit's own checkout has no manifest; a vendored copy always does.
   if [ -f "$MANIFEST" ]; then
@@ -256,6 +300,9 @@ bindings=
 if ! has_bindings; then
   bindings=$(skeleton "$kit_ai/INSTALL.md")
   [ -n "$bindings" ] || die "no Bindings skeleton in $kit_ai/INSTALL.md"
+  # New Bindings have no older text to reconcile: start the row at the newest amendment.
+  newest=$(latest_amendment "$kit_ai/$(basename "$AMENDMENTS")")
+  bindings=${bindings//Through A<n>/Through A$newest}
 fi
 
 if [ "$target" != "$kit_root" ]; then
@@ -302,7 +349,7 @@ verified=0
 bash "$target/ai/sync.sh" --check "$target" || verified=$?
 case "$verified" in
   0) ;;
-  3) echo "sync: the kit is in place; fill in the rows named above, then run ai/sync.sh --check ." ;;
+  3) echo "sync: the kit is in place; finish what is named above (Bindings rows to fill in, amendments to reconcile), then run ai/sync.sh --check ." ;;
   *) die "the result failed its own --check" ;;
 esac
 case "$version" in

@@ -130,6 +130,7 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Not granted: propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
+| Amendments reconciled | Through A0: none yet. This repository writes them; raise this with each new entry, once this file agrees with it. |
 
 ## Developing the kit
 

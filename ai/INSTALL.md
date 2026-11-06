@@ -118,6 +118,7 @@ Replace every `TODO`; `none: <why>` is a valid value, a blank is not.
 | Autonomy | TODO: What agents may do without asking. |
 | `Feedback (star-pupil)` | off |
 | The kit itself | Vendored from ord-ai-n (version in `ai/.kit-manifest`). Update by re-running the installer; never edit `ai/` or the block above. |
+| Amendments reconciled | Through A<n>. The installer set this. After an update, raise it only once this repository's own text agrees with every newer entry in `ai/AMENDMENTS.md` (§ Update). |
 ```
 
 **Reconcile, don't stack.** Where the repository already has rules (a
