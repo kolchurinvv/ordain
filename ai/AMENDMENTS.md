@@ -34,6 +34,30 @@ delete one:
 - **Check outside `ai/`:** where an adopting repository may have restated the old rule.
 ```
 
+## A2 (2026-11-06): `ai/` is the kit's; project docs go where `<project-docs>` says
+
+- **Changed:** core § `ai/` is the kit's (new); `ai/06` § Where each kind of
+  knowledge lives; the Bindings skeleton's new `<project-docs>` row; `ai/README.md`
+  § Adopt; the adoption prompt in `INSTALL.md`; the message `ai/sync.sh --check`
+  prints for files the kit doesn't ship.
+- **Was:** the kit said not to edit its files, and `ai/06` put runbooks under
+  `docs/runbooks/`. But nothing agents read every session said that `ai/` takes no
+  new files or where a project's own docs go, and the check that rejected a project
+  file didn't say where to move it. A project file could end up under `ai/`, named
+  like a kit module, and listed in `ai/.kit-manifest` by hand to quiet the check,
+  and the next update then deleted it as no longer shipped.
+- **Now:** nothing project-owned lives under `ai/`, and nobody edits the manifest.
+  The repository's own docs go where its `<project-docs>` Bindings row says.
+- **Why:** every update replaces `ai/`. Anything else there is overwritten,
+  deleted, or collides with a kit module that has the same number.
+- **Check outside `ai/`:** add the `<project-docs>` row (`--check` asks for it).
+  Then look for files under `ai/` that the manifest doesn't list, or that you
+  listed by hand (`git log -p -- ai/.kit-manifest` shows lines added outside an
+  update); a file a past update deleted that way is still in git history. Move
+  them to `<project-docs>` and fix links to their old paths. Also look for
+  Bindings rows or docs that tell agents to restore files under `ai/` after an
+  update.
+
 ## A1 (2026-11-06): Adversarial review is one pass
 
 - **Changed:** core rule 10; `ai/08` § The review-fix loop (steps 1, 5 and 6,

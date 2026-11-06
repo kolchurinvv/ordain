@@ -104,6 +104,7 @@ Replace every `TODO`; `none: <why>` is a valid value, a blank is not.
 | `<base>` branch | TODO: The branch changes merge into. |
 | Branches and commits | TODO: The repository's naming and message format. |
 | Decision records | TODO: Where architecture and stack decisions are written down. |
+| `<project-docs>` (`ai/06`) | TODO: Where this repository keeps its own docs (runbooks, specs, test plans, checklists), for example `docs/` with `docs/runbooks/`. Never under `ai/`, which the kit replaces on every update. |
 | Status docs (rule 5) | TODO: The README or roadmap that must stay current. |
 | Generated baselines (rule 3) | TODO: Snapshots, fixtures, migrations, lockfiles: files agents must never rewrite unasked. |
 | `<read-back>` (`ai/10`) | TODO: How tests read a stored record back from the real store: the database or store, the helper or test handle, how test data is isolated. `none: <why>` if nothing persists. |
@@ -226,7 +227,7 @@ Adopt the ord-ai-n agent kit in this repository. The kit is a contract for how A
 
 3. From here on, follow ai/INSTALL.md, which is now in the repository, from Install step 3 to the end of step 5. It is the procedure; this message only adds emphasis:
    - Bindings: find every value in the repository itself. State gaps instead of fixing them. Where the repository has its own governing documents (a constitution, CONTRIBUTING, decision records), they win over the kit. Say so in the Bindings, and follow them for branch names, commit messages, and what must pass before a pull request.
-   - Never edit ai/ or the generated block by hand; only the installer writes them.
+   - Never add, edit or remove anything under ai/ (its manifest included) or in the generated block; only the installer writes them. This repository's own docs go where the <project-docs> Bindings row says.
    - Before the pull request, run the repository's gate the way it requires. Don't copy anyone's secrets to make it run, and don't take a shared resource (a test database, a container) that another checkout is using. If you can't run it, say so.
    - One concern per pull request. Changes to tools the maintainers already run go in a separate pull request.
    - After the pull request is open, list every gap the Bindings state and offer to open one issue per gap (ai/INSTALL.md step 6). Open them only when I agree.

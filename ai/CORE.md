@@ -98,3 +98,12 @@ names this repository's). Nothing else — do not infer choices from sibling rep
 prior conventions, or training priors. If the decision records are silent, ask
 the user. This block governs *how* you work; the decision records govern *what*
 you build.
+
+### `ai/` is the kit's
+
+The installer writes `ai/`, and every update replaces it. Never add, edit,
+rename or delete a file there, and never edit `ai/.kit-manifest` to make the
+check pass: an update may overwrite or delete whatever the kit didn't ship. This
+repository's own docs (runbooks, specs, test plans, checklists) go where
+`<project-docs>` says, named the way this repository names things rather than
+after the kit's numbered modules. See `ai/06`.
