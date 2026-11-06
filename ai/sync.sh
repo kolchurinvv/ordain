@@ -180,6 +180,15 @@ latest_amendment() {
   [ -f "$1" ] || { echo 0; return 0; }
   awk '/^## A[0-9]+ / { n = substr($2, 2) + 0; if (n > m) m = n } END { print m + 0 }' "$1"
 }
+# Entries out of order in an amendments log: each must be numbered below the one above it, so the
+# log runs newest first with every number once.
+misnumbered() {
+  [ ! -f "$1" ] || awk '/^## A[0-9]+ / {
+      n = substr($2, 2) + 0
+      if (seen && n >= prev) print "A" n " comes after A" prev
+      prev = n; seen = 1
+    }' "$1"
+}
 # The entries numbered above $2, one "A<n> (<date>): <rule>" line each, newest first.
 amendments_after() {  # $1 = the amendments log, $2 = the number reconciled through
   [ ! -f "$1" ] ||
@@ -240,6 +249,13 @@ if [ "$check" = 1 ]; then
     echo "sync: AGENTS.md's Bindings still have rows to fill in (see ai/INSTALL.md step 3):" >&2
     echo "$todo" | sed 's/^/  /' >&2
     unfinished=1
+  fi
+  # A repeated or out-of-order number would hide an entry from every repository past it.
+  bad=$(misnumbered "$AMENDMENTS")
+  if [ -n "$bad" ]; then
+    echo "sync: $AMENDMENTS must list entries newest first, each number once (its § Numbers):" >&2
+    while IFS= read -r line; do echo "  $line"; done <<<"$bad" >&2
+    status=1
   fi
   # Rule changes an update brought that the repository's own text may still contradict. They
   # hold the check, like an unfilled row, until the Bindings say they are reconciled.

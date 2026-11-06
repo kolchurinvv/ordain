@@ -20,9 +20,15 @@ A repository that wants to keep the old behavior says so in its Bindings or a
 decision record, which win over the kit's defaults (core § Sources of truth),
 and raises the row.
 
-An entry looks like this. The check finds entries by their `## A<number> `
-heading, so keep that shape, number entries in order, and never renumber or
-delete one:
+**Numbers.** The check finds entries by their `## A<number> ` heading and shows
+a repository only the entries numbered above its row. An entry numbered below
+one that has already shipped is therefore never shown to anyone who reconciled
+past it. So an entry takes the next free number at the moment it lands. If
+another entry landed while yours waited for review, renumber yours (and the rows
+that name it) before it lands. Once an entry has shipped, never renumber or
+delete it. `ai/sync.sh --check` fails on a repeated number or one out of order.
+
+An entry looks like this:
 
 ```markdown
 ## A<n> (<YYYY-MM-DD>): <the rule as it now stands>
