@@ -141,3 +141,8 @@ rather than staying silent.
   (Bindings: generated baselines).
 - Test changes to `ai/sync.sh` or `install.sh` against a scratch repository,
   never against a real adopter.
+- A change to what a rule asks agents to do (not a rewording) gets an entry in
+  `ai/AMENDMENTS.md` in the same commit series: what it supersedes, why, and where
+  an adopter may have restated the old rule outside `ai/`. Raise this
+  repository's `Amendments reconciled` row in the same series, once its own text
+  agrees; `--check` holds every adopter until they do the same.

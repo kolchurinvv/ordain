@@ -16,6 +16,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `sync.sh` | Vendors the kit into a repo (`sync.sh <repo>`); verifies a vendored copy (`sync.sh --check <repo>`). |
 | `../install.sh` | The `curl \| bash` entry point: downloads the kit at one commit and runs its `sync.sh` on the current repo. |
 | `INSTALL.md` | Step by step: install into an existing repo, fill in the Bindings, update, remove, send lessons back; or a prompt that hands the adoption to an agent. |
+| `AMENDMENTS.md` | Every change to what a rule asks of agents, newest first: what it supersedes, why, and where an adopting repo may have restated the old rule. `sync.sh --check` holds an update until they are reconciled. |
 | `00-execution-policy.md` | How agents operate: incremental commits, known-good start, append-only baselines, ratchet-only gates, conditional autonomy. |
 | `01-commit-and-pr-hygiene.md` | The gate, commit messages (host convention first), branching/worktrees, PRs, milestone tags. |
 | `02-ci-discipline.md` | Watch every push to green; one umbrella check; merge only on a green, pinned head; use the poll recipe; artifact triage. |
