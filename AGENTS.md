@@ -111,6 +111,12 @@ prior conventions, or training priors. If the decision records are silent, ask
 the user. This block governs *how* you work; the decision records govern *what*
 you build.
 
+Working rules change the same way. When a failure suggests a new rule, propose
+it to the user and say where it would live: the Bindings, a decision record,
+memory, or a lesson for the kit. A "from now on" in a reply binds nothing, and
+no later session will see it. A rule changes when the user rules on it, never on
+an agent's say-so.
+
 ### `ai/` is the kit's
 
 The installer writes `ai/`, and every update replaces it. Never add, edit,
@@ -142,7 +148,7 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Limited. Agents commit on a branch, push it and open its pull request without asking, and may rebase and force-push their own open PR branch (`--force-with-lease`), as stacked PRs need after a squash merge. Merging is the owner's call. Everything else outward-facing (tags, releases, issues, repository settings, rewriting `main` or anyone else's branch, anything sent to another repository) is propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
-| Amendments reconciled | Through A2. This repository writes them; raise this with each new entry, once this file agrees with it. |
+| Amendments reconciled | Through A3. This repository writes them; raise this with each new entry, once this file agrees with it. |
 
 ## Developing the kit
 

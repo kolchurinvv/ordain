@@ -40,6 +40,22 @@ An entry looks like this:
 - **Check outside `ai/`:** where an adopting repository may have restated the old rule.
 ```
 
+## A3 (2026-11-06): Agents propose rules; they don't declare them
+
+- **Changed:** core § Sources of truth.
+- **Was:** nothing said who makes working rules. An agent that found a fault in
+  its own work could announce a rule for itself ("from now on, …") and go on as
+  if that settled it.
+- **Now:** the agent proposes the rule to the user and says where it would live
+  (the Bindings, a decision record, memory, or a lesson for the kit). It applies
+  once the user rules on it and it is recorded there.
+- **Why:** a rule announced in a reply lives only in that session. The next
+  session never sees it, and the user never decided it. It also tends to be
+  fitted to the one failure that prompted it.
+- **Check outside `ai/`:** memory entries, docs or Bindings rows where an agent
+  recorded a rule of its own without the user's ruling; prompts or skills that
+  tell an agent to "add a rule" after a failure.
+
 ## A2 (2026-11-06): `ai/` is the kit's; project docs go where `<project-docs>` says
 
 - **Changed:** core § `ai/` is the kit's (new); `ai/06` § Where each kind of
