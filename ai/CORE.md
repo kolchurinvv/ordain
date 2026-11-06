@@ -62,11 +62,13 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    on-disk memory are tracked files, not per-checkout scratch — anything that
    cleans or re-syncs a checkout will otherwise silently delete them. See
    `ai/05`.
-10. **Agent-authored work gets an adversarial pass before it lands,** and every
+10. **Agent-authored work gets one adversarial pass before it lands,** and every
     finding gets an answer: fixed, rebutted with evidence, or held for the user's
-    ruling. The pass's first question is "is this the change that was asked
-    for?", the failure no gate can see, because gates check a change against
-    itself. A green pipeline is a claim to verify, not evidence. See `ai/08`.
+    ruling. Another round is the user's call: reviewing until the reviewer finds
+    nothing doesn't converge. The pass's first question is "is this the change
+    that was asked for?", the failure no gate can see, because gates check a
+    change against itself. A green pipeline is a claim to verify, not evidence.
+    See `ai/08`.
 
 > **Numbering is a contract.** Items 1–8 mirror `ai/00-execution-policy.md`'s
 > rule numbers exactly, so "rule 4" means the same thing in every repo and every

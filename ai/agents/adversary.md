@@ -166,7 +166,9 @@ downgraded**. Rank by consequence, not by interest.
 - **Does it do what was asked?** — yes/no with evidence, **before** the findings.
 - **Findings**, most severe first, numbered F1, F2, …: `path:line`, the defect in
   one sentence, the concrete failure scenario, and what would convince you it is
-  fine. The author answers each one in the review-fix loop (`ai/08`).
+  fine. The author answers each one in the review-fix loop (`ai/08`). Yours is
+  the one review. If you are a further round the user asked for, review the delta
+  since the last review, and leave findings closed by an accepted rebuttal closed.
 - **Gate coverage** — what ran against this tip, what did not, and which risks
   here no gate covers at all. This sentence is the most valuable thing you produce.
 - **Blast radius** — consumers of every shared file touched.

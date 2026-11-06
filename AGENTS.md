@@ -74,11 +74,13 @@ These are the rules that change turn-to-turn behavior. The modules expand each.
    on-disk memory are tracked files, not per-checkout scratch — anything that
    cleans or re-syncs a checkout will otherwise silently delete them. See
    `ai/05`.
-10. **Agent-authored work gets an adversarial pass before it lands,** and every
+10. **Agent-authored work gets one adversarial pass before it lands,** and every
     finding gets an answer: fixed, rebutted with evidence, or held for the user's
-    ruling. The pass's first question is "is this the change that was asked
-    for?", the failure no gate can see, because gates check a change against
-    itself. A green pipeline is a claim to verify, not evidence. See `ai/08`.
+    ruling. Another round is the user's call: reviewing until the reviewer finds
+    nothing doesn't converge. The pass's first question is "is this the change
+    that was asked for?", the failure no gate can see, because gates check a
+    change against itself. A green pipeline is a claim to verify, not evidence.
+    See `ai/08`.
 
 > **Numbering is a contract.** Items 1–8 mirror `ai/00-execution-policy.md`'s
 > rule numbers exactly, so "rule 4" means the same thing in every repo and every
@@ -130,7 +132,7 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Limited. Agents commit on a branch, push it and open its pull request without asking, and may rebase and force-push their own open PR branch (`--force-with-lease`), as stacked PRs need after a squash merge. Merging is the owner's call. Everything else outward-facing (tags, releases, issues, repository settings, rewriting `main` or anyone else's branch, anything sent to another repository) is propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
-| Amendments reconciled | Through A0: none yet. This repository writes them; raise this with each new entry, once this file agrees with it. |
+| Amendments reconciled | Through A1. This repository writes them; raise this with each new entry, once this file agrees with it. |
 
 ## Developing the kit
 
