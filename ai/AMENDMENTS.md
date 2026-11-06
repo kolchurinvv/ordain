@@ -26,7 +26,7 @@ one that has already shipped is therefore never shown to anyone who reconciled
 past it. So an entry takes the next free number at the moment it lands. If
 another entry landed while yours waited for review, renumber yours (and the rows
 that name it) before it lands. Once an entry has shipped, never renumber or
-delete it.
+delete it. `ai/sync.sh --check` fails on a repeated number or one out of order.
 
 An entry looks like this:
 
