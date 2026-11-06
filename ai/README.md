@@ -14,6 +14,7 @@ It drops into any repository and works with any coding agent, harness or model.
 | `../AGENTS.md` | Provider-neutral entrypoint: the core block (generated from `CORE.md`) + this repo's Bindings. |
 | `CORE.md` | The non-negotiable core and module index: the block `sync.sh` generates into every adopting repo's `AGENTS.md`. |
 | `sync.sh` | Vendors the kit into a repo (`sync.sh <repo>`); verifies a vendored copy (`sync.sh --check <repo>`). |
+| `.kit-retired` | Files the kit used to ship and has removed: the only files an update deletes from a repo. |
 | `../install.sh` | The `curl \| bash` entry point: downloads the kit at one commit and runs its `sync.sh` on the current repo. |
 | `INSTALL.md` | Step by step: install into an existing repo, fill in the Bindings, update, remove, send lessons back; or a prompt that hands the adoption to an agent. |
 | `AMENDMENTS.md` | Every change to what a rule asks of agents, newest first: what it supersedes, why, and where an adopting repo may have restated the old rule. `sync.sh --check` holds an update until they are reconciled. |
