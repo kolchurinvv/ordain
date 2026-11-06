@@ -38,8 +38,8 @@ delete one:
 
 - **Changed:** core rule 10; `ai/08` § The review-fix loop (steps 1, 5 and 6,
   § Why one pass, § Automated loops); `ai/00` § Definition of done, item 5;
-  `agents/adversary.md` § Handoff protocol; the Bindings skeleton's
-  `Adversarial review (core 10)` row.
+  `agents/adversary.md` § Handoff protocol; `ai/07` § Multi-agent
+  orchestration; the Bindings skeleton's `Adversarial review (core 10)` row.
 - **Was:** "every finding gets an answer", with nothing in the core about when to
   stop, read as review, fix and review again until the reviewer finds nothing.
 - **Now:** before the review, the author puts its own tests through every
