@@ -36,13 +36,16 @@ delete one:
 
 ## A1 (2026-11-06): Adversarial review is one pass
 
-- **Changed:** core rule 10; `ai/08` § The review-fix loop (steps 5 and 6,
+- **Changed:** core rule 10; `ai/08` § The review-fix loop (steps 1, 5 and 6,
   § Why one pass, § Automated loops); `ai/00` § Definition of done, item 5;
   `agents/adversary.md` § Handoff protocol; the Bindings skeleton's
   `Adversarial review (core 10)` row.
 - **Was:** "every finding gets an answer", with nothing in the core about when to
   stop, read as review, fix and review again until the reviewer finds nothing.
-- **Now:** one review. Every finding is fixed, rebutted with evidence, or held for
+- **Now:** before the review, the author puts its own tests through every
+  `ai/08` Rule 5 check and keeps them on real dependencies (`ai/10`), so the
+  review isn't spent finding what the author could have run. Then one review.
+  Every finding is fixed, rebutted with evidence, or held for
   the user's ruling, and then the loop stops. A further round happens only when
   the user asks, and covers the delta since the last review. A defect class that
   keeps coming back in new places goes to the user as a design question, not as

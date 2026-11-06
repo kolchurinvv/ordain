@@ -224,9 +224,16 @@ balanced, or credit a diff for being small and tidy.
 
 A review only helps if every finding gets an answer. The loop:
 
-1. **Review before CI.** Run the adversarial pass when the author believes the
-   change is ready, before pushing it for CI. Each fix after a push costs a CI
-   run; a review costs none.
+1. **Review before CI, once the author's own checks are done.** Run the
+   adversarial pass when the change is ready, before pushing it for CI. Each fix
+   after a push costs a CI run; a review costs none. Ready means the author has
+   already put its own tests through every Rule 5 check: each fails without the
+   change, no test that pinned the old behaviour was deleted or loosened, each
+   assertion pins the invariant rather than today's output, and every read-back
+   has actually run against the real store. It has also kept them on real
+   dependencies, not a stub around the code under test (`ai/10`). A review that
+   finds what the author could have run spends its one pass on the author's
+   work.
 2. **One fresh reviewer.** Start the adversary in a context that didn't write
    the change (§ Wiring it in). Give it the request in the requester's words
    and the diff range, nothing else.
