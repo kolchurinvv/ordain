@@ -6,12 +6,15 @@
 #                              <repo>/ai/.kit-manifest, and regenerate the core block in
 #                              <repo>/AGENTS.md from ai/CORE.md. AGENTS.md is created if it is
 #                              missing, and gets the markers and the Bindings skeleton if it
-#                              lacks them. Finishes by running --check on the result.
+#                              lacks them. Of the files the earlier manifest listed that this kit
+#                              no longer ships, it deletes only those ai/.kit-retired names.
+#                              Finishes by running --check on the result.
 #                              Run it from an ord-ai-n checkout. It refuses to overwrite what
 #                              it didn't write (an ai/ with no manifest, uncommitted edits
 #                              under ai/), or to create AGENTS.md outside a repository's root,
 #                              unless --force is given.
-#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest or
+#   ai/sync.sh --check <repo>  Change nothing. Exit 1 if <repo>/ai/ differs from its manifest, the
+#                              manifest's seal is missing or doesn't match (a hand edit), or
 #                              <repo>/AGENTS.md's core block differs from ai/CORE.md. Exit 3 if
 #                              only the Bindings are unfinished: a placeholder in the skeleton
 #                              (ai/INSTALL.md) has no row, a row is blank or still says TODO,
@@ -40,12 +43,32 @@ BEGIN='<!-- ord-ai-n:core:begin -->'
 END='<!-- ord-ai-n:core:end -->'
 MANIFEST=ai/.kit-manifest
 AMENDMENTS=ai/AMENDMENTS.md
+RETIRED=ai/.kit-retired
 
 die() { echo "sync: $*" >&2; exit 1; }
 usage() { echo "usage: ai/sync.sh [--check | --force] <repo>" >&2; exit 2; }
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 # The file paths a manifest lists, one per line.
 listed() { grep -v '^#' "$1" | sed 's/^[0-9a-f]*  //' || true; }
+# The digest of a manifest's file lines, which the installer records as its seal. The seal is a
+# tripwire for a hand edit, not proof of what the kit shipped: anyone can recompute it.
+seal_of() { { grep -v '^#' "$1" || true; } | sha | cut -d' ' -f1; }
+# Whether a manifest's seal matches its file lines: sealed, unsealed (no seal line), or broken.
+manifest_seal() {
+  local recorded
+  recorded=$(sed -n 's/^# seal: //p' "$1" | tail -n 1)
+  if [ -z "$recorded" ]; then echo unsealed
+  elif [ "$recorded" = "$(seal_of "$1")" ]; then echo sealed
+  else echo broken
+  fi
+}
+# The paths the kit used to ship and has retired, one per line: the only files an update deletes.
+retired() { [ ! -f "$1" ] || grep -v '^#' "$1" | grep . || true; }
+# Whether a file still has the content the target's manifest recorded for it.
+unchanged() {  # $1 = path inside the target
+  (cd "$target" && awk -v f="$1" '!/^#/ && substr($0, 67) == f' "$MANIFEST" |
+    sha -c --quiet - >/dev/null 2>&1)
+}
 # Whether every file the target's manifest lists is byte for byte what was installed.
 matches_manifest() {
   [ -f "$target/$MANIFEST" ] &&
@@ -239,6 +262,15 @@ if [ "$check" = 1 ]; then
   fi
   # The kit's own checkout has no manifest; a vendored copy always does.
   if [ -f "$MANIFEST" ]; then
+    # This script and a sealed manifest are always written by the same sync, so a missing seal
+    # is an edit too.
+    seal=$(manifest_seal "$MANIFEST")
+    if [ "$seal" != sealed ]; then
+      echo "sync: $MANIFEST was edited by hand (its seal is $seal). Only the installer writes it. Move" >&2
+      echo "      this repository's own files out of ai/, to where the Bindings' <project-docs> row says" >&2
+      echo "      (ai/06), commit the move, and run the install line again (ai/INSTALL.md § Update)." >&2
+      status=1
+    fi
     if ! out=$(grep -v '^#' "$MANIFEST" | sha -c --quiet - 2>&1); then
       echo "sync: vendored kit files were edited in place; change them in ord-ai-n and re-sync:" >&2
       echo "$out" >&2
@@ -314,11 +346,20 @@ fi
 
 if [ "$target" != "$kit_root" ]; then
   if [ -f "$target/$MANIFEST" ]; then
-    # Drop files an earlier sync copied that the kit no longer ships.
+    # Files the earlier manifest lists that this kit doesn't ship. Delete one only if the kit says
+    # it retired that path and the file is as installed. A line added by hand may name the
+    # repository's own file, so anything else is kept, and the closing --check names it.
+    gone=$(retired "$kit_ai/$(basename "$RETIRED")")
     comm -23 <(listed "$target/$MANIFEST" | sort) <(echo "$files" | sort) |
       while IFS= read -r f; do
-        [ -n "$f" ] || continue
-        rm -f "$target/$f" && echo "sync: removed $f (no longer in the kit)"
+        [ -n "$f" ] && [ -e "$target/$f" ] || continue
+        if ! grep -qxF "$f" <<<"$gone"; then
+          echo "sync: kept $f: the manifest listed it, but the kit neither ships nor retired it" >&2
+        elif ! unchanged "$f"; then
+          echo "sync: kept $f: the kit retired it, but it was changed after it was installed" >&2
+        else
+          rm -f "$target/$f" && echo "sync: removed $f (the kit retired it)"
+        fi
       done
   fi
   while IFS= read -r f; do
@@ -328,9 +369,11 @@ if [ "$target" != "$kit_root" ]; then
   {
     echo "# ord-ai-n agent kit, vendored by ai/sync.sh. Do not edit the files listed here:"
     echo "# change them in ord-ai-n and re-run its installer (ai/INSTALL.md). Verify: ai/sync.sh --check ."
+    echo "# Only the installer writes this file. The seal on its last line makes a hand edit fail --check."
     echo "# source: $version"
     (cd "$target" && while IFS= read -r f; do sha "$f"; done <<<"$files")
   } >"$target/$MANIFEST"
+  echo "# seal: $(seal_of "$target/$MANIFEST")" >>"$target/$MANIFEST"
 fi
 
 # Regenerate the core block. Write through the existing file to keep its permissions.

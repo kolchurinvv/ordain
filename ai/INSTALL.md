@@ -261,6 +261,20 @@ If the installer refuses because `ai/` has uncommitted edits, someone edited
 the kit in place. Move what they meant into Bindings, drop the edit
 (`git checkout -- ai`), and run it again.
 
+If `--check` says `ai/.kit-manifest` was edited by hand, or names a file under
+`ai/` that the kit doesn't ship, a file of this repository's own is in the kit's
+directory:
+
+1. Move each such file to where the `<project-docs>` row says (`git mv`), and fix
+   links to its old path.
+2. Commit the move, even with the hand-edited manifest still in place.
+3. Run the install line again. It writes a fresh, sealed manifest, and
+   `ai/sync.sh --check .` then passes on the kit's side.
+
+An update deletes a file only if `ai/.kit-retired` names it, the manifest listed
+it, and it is unchanged since it was installed. It keeps everything else, and
+`--check` names it until it is moved.
+
 ## Remove
 
 ```sh

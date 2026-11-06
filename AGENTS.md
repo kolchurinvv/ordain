@@ -154,6 +154,9 @@ rather than staying silent.
   (Bindings: generated baselines).
 - Test changes to `ai/sync.sh` or `install.sh` against a scratch repository,
   never against a real adopter.
+- Removing a file from `ai/` adds its path to `ai/.kit-retired` in the same
+  commit. An update deletes nothing else; without that line every adopter keeps
+  the stale file, and their `--check` fails on it.
 - A change to what a rule asks agents to do (not a rewording) gets an entry in
   `ai/AMENDMENTS.md` in the same commit series: what it supersedes, why, and where
   an adopter may have restated the old rule outside `ai/`. Raise this
