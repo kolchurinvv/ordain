@@ -112,7 +112,7 @@ Replace every `TODO`; `none: <why>` is a valid value, a blank is not.
 | `<static-checks>` (`ai/12`) | TODO: The type-check, lint, format and guard commands, whether warnings fail, and the invariants the guards hold. State gaps (`none: no lint gate yet`). |
 | Quality gates (rule 4) | TODO: The checks that may only get stricter. |
 | CI (rule 6) | TODO: What runs on which event, and how to watch it. |
-| Adversarial review (core 10) | TODO: How independent review is run here. |
+| Adversarial review (core 10) | TODO: How independent review is run here: which tool or agent, and who decides on a further round (`ai/08`: one review; more only when the user asks). |
 | Agent definitions | TODO: Where agent and skill files live. |
 | Memory root | TODO: Where shared agent memory lives, or none. |
 | Autonomy | TODO: What agents may do without asking. |

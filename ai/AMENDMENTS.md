@@ -33,3 +33,29 @@ delete one:
 - **Why:** the failure that made the old rule wrong.
 - **Check outside `ai/`:** where an adopting repository may have restated the old rule.
 ```
+
+## A1 (2026-11-06): Adversarial review is one pass
+
+- **Changed:** core rule 10; `ai/08` § The review-fix loop (steps 1, 5 and 6,
+  § Why one pass, § Automated loops); `ai/00` § Definition of done, item 5;
+  `agents/adversary.md` § Handoff protocol; `ai/07` § Multi-agent
+  orchestration; the Bindings skeleton's `Adversarial review (core 10)` row.
+- **Was:** "every finding gets an answer", with nothing in the core about when to
+  stop, read as review, fix and review again until the reviewer finds nothing.
+- **Now:** before the review, the author puts its own tests through every
+  `ai/08` Rule 5 check and keeps them on real dependencies (`ai/10`), so the
+  review isn't spent finding what the author could have run. Then one review.
+  Every finding is fixed, rebutted with evidence, or held for
+  the user's ruling, and then the loop stops. A further round happens only when
+  the user asks, and covers the delta since the last review. A defect class that
+  keeps coming back in new places goes to the user as a design question, not as
+  another round of patches.
+- **Why:** repeated rounds don't converge. The real defects surface in the first
+  round or two. Later rounds restate closed findings, critique the previous
+  round's fixes, or reach into code nobody touched, and each one costs a full
+  review and a fix pass.
+- **Check outside `ai/`:** the `Adversarial review (core 10)` Bindings row; any
+  review skill, command or agent copy that runs the loop (`providers.md`
+  § Loading the kit's agents); contributing or pull request template text that
+  asks for a clean re-review; agents mid-session, which keep the old rule until
+  restarted or told.
