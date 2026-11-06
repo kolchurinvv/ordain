@@ -68,9 +68,10 @@ unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
   after=$(tail -n "+$(($3 + 1))" "$1")
   skeleton_placeholders "$2" | while IFS= read -r p; do
     [ -n "$p" ] || continue
-    # No pipe into grep -q: it exits at the first match, the writer can then die of SIGPIPE, and
-    # under pipefail that turns a row that is there into one reported missing.
-    grep -qF "\`$p\`" <<<"$after" || echo "$p"
+    # A pattern match in the shell, not grep: a pipe into grep -q let the writer die of SIGPIPE,
+    # which pipefail turned into a row reported missing, and a here-string needs a writable temp
+    # directory for large text (always, on bash before 5.1).
+    [[ $after == *"\`$p\`"* ]] || echo "$p"
   done
 }
 # Bindings rows still to fill in: their value is blank or starts with the skeleton's TODO. The
