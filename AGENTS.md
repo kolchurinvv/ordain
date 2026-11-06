@@ -130,6 +130,7 @@ rather than staying silent.
 | Memory root | Harness-local only; no tracked memory root. |
 | Autonomy | Limited. Agents commit on a branch, push it and open its pull request without asking, and may rebase and force-push their own open PR branch (`--force-with-lease`), as stacked PRs need after a squash merge. Merging is the owner's call. Everything else outward-facing (tags, releases, issues, repository settings, rewriting `main` or anyone else's branch, anything sent to another repository) is propose-then-act. |
 | `Feedback (star-pupil)` | On (kit run): the owner's machine and projects; transcripts only on request. Lessons go to `lessons/`. |
+| Amendments reconciled | Through A0: none yet. This repository writes them; raise this with each new entry, once this file agrees with it. |
 
 ## Developing the kit
 
@@ -141,3 +142,8 @@ rather than staying silent.
   (Bindings: generated baselines).
 - Test changes to `ai/sync.sh` or `install.sh` against a scratch repository,
   never against a real adopter.
+- A change to what a rule asks agents to do (not a rewording) gets an entry in
+  `ai/AMENDMENTS.md` in the same commit series: what it supersedes, why, and where
+  an adopter may have restated the old rule outside `ai/`. Raise this
+  repository's `Amendments reconciled` row in the same series, once its own text
+  agrees; `--check` holds every adopter until they do the same.

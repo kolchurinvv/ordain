@@ -6,7 +6,9 @@
 #
 # <repo> defaults to the current directory. The kit is downloaded at one exact commit and its
 # own ai/sync.sh does the work, so the repo's ai/.kit-manifest records exactly what was
-# installed (github.com/<owner>/<name>@<sha>). Re-run the same line to update.
+# installed (github.com/<owner>/<name>@<sha>). Re-run the same line to update. An update that
+# changes rules leaves --check at exit 3, listing them, until the repo has reconciled its own text
+# (ai/AMENDMENTS.md).
 #
 # The kit repo is public, so this script reads it anonymously and never sends a credential.
 #
@@ -62,3 +64,4 @@ fi
 [ -f "$tmp/ai/sync.sh" ] || die "$source has no ai/sync.sh; that kit version predates this installer"
 ORD_AI_N_SOURCE=$source bash "$tmp/ai/sync.sh" ${force[@]+"${force[@]}"} "$target"
 echo "install: point tools that don't read AGENTS.md at it (ai/providers.md), review the diff, and commit the result on its own"
+echo "install: then reconcile any amendments listed above, in a separate commit (ai/INSTALL.md § Update)"

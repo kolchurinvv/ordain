@@ -58,7 +58,12 @@ the prompt in [§ Adopting with an agent](ai/INSTALL.md#adopting-with-an-agent).
 ## Update
 
 Re-run the install line and commit the result on its own. Its diff is exactly what
-changed in the kit.
+changed in the kit. When the update changes what a rule asks of agents, the
+check lists those amendments ([`ai/AMENDMENTS.md`](ai/AMENDMENTS.md)) and keeps
+failing until you reconcile them. Each one names the places your own files may
+still state the old rule. Fix those in a separate commit, raise the Bindings'
+`Amendments reconciled` row, and restart agents that are mid-session
+([`ai/INSTALL.md` § Update](ai/INSTALL.md#update)).
 
 ## What's in the kit
 
