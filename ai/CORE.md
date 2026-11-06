@@ -99,6 +99,12 @@ prior conventions, or training priors. If the decision records are silent, ask
 the user. This block governs *how* you work; the decision records govern *what*
 you build.
 
+Working rules change the same way. When a failure suggests a new rule, propose
+it to the user and say where it would live: the Bindings, a decision record,
+memory, or a lesson for the kit. A "from now on" in a reply binds nothing, and
+no later session will see it. A rule changes when the user rules on it, never on
+an agent's say-so.
+
 ### `ai/` is the kit's
 
 The installer writes `ai/`, and every update replaces it. Never add, edit,
