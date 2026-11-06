@@ -102,9 +102,14 @@ Run these first; they are mechanical and they are where the worst findings hide.
 
 1. **Unguarded-config diff** — every file that defines what the gates check:
    coverage thresholds, lint config, type strictness, gate implementations,
-   exemption registries, ignore files. Any loosening is a blocking finding; gates
-   ratchet upward only and an agent may never self-serve an exemption.
-. **CI-wiring read** — `continue-on-error`, `|| true` on a check, a new `if:`
+   exemption registries, ignore files — and the repo's Bindings and decision
+   records, which outrank the kit's rules, so one added row can relax any of
+   them. Any loosening is a blocking finding; gates ratchet upward only and an
+   agent may never self-serve an exemption.
+2. **Escape-hatch grep** — lint-disable, type suppressions, `any`-casts, widened
+   types, and tests neutralised via skip/todo/only or a deleted assertion. Grep
+   the diff; do not rely on reading.
+3. **CI-wiring read** — `continue-on-error`, `|| true` on a check, a new `if:`
    that can skip a required job, a job dropped from the umbrella's dependencies,
    a check moved to warn-only.
 
