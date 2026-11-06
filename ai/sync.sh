@@ -64,9 +64,13 @@ skeleton_placeholders() {
 }
 # Of those, the ones AGENTS.md never mentions after the core block, i.e. in its Bindings.
 unbound() {  # $1 = AGENTS.md, $2 = ai/INSTALL.md, $3 = line of the end marker
+  local after p
+  after=$(tail -n "+$(($3 + 1))" "$1")
   skeleton_placeholders "$2" | while IFS= read -r p; do
     [ -n "$p" ] || continue
-    tail -n "+$(($3 + 1))" "$1" | grep -qF "\`$p\`" || echo "$p"
+    # No pipe into grep -q: it exits at the first match, the writer can then die of SIGPIPE, and
+    # under pipefail that turns a row that is there into one reported missing.
+    grep -qF "\`$p\`" <<<"$after" || echo "$p"
   done
 }
 # Bindings rows still to fill in: their value is blank or starts with the skeleton's TODO. The
